@@ -134,29 +134,29 @@ kodi_stop() {
     kodi_get_active
     if ((active_player)); then
         echo "Request stop:" >&2
-        kodi_request '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": '"$active_player"' }, "id":1}'
+        kodi_request '{"jsonrpc": "2.0", "method":"Player.Stop", "params": { "playerid": '"$active_player"' }, "id":1}'
     fi
-    unset INPUT
 }
 kodi_next() {
     kodi_get_active
     if ((active_player)); then
         echo "Request next:" >&2
-        kodi_request '{"jsonrpc": "2.0", "method": "Player.GoTo","params": { "playerid": '"$active_player"', "to":"next" }, "id":1}'
+        kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"next" }, "id":1}'
     fi
-    unset INPUT
 }
 kodi_get_active() {
     kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}'
     [[ $? ]] || error "Failed to send - is Kodi running?"
     if [[ $response ]]; then
         active_player=$(echo $response | jq -c '.result[] | select(.type | contains("video")).playerid')
-        # echo "Active Player ID: $active_player"
     fi
+    echo "Active Player ID: $active_player"
 }
 kodi_request(){
     
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1"  "http://$REMOTE/jsonrpc" 2>/dev/null)"
+    echo $1 >&2
+    echo $response >&2
     ! [[ $response =~ '"error":' ]] || error $response
 
 }
@@ -176,10 +176,12 @@ kodi_main() {
             fi
             if [[ "$INPUT" =~ ^(stop|halt)$ ]]; then
                 kodi_stop
+                unset INPUT
                 kodi_main
             fi
             if [[ "$INPUT" =~ ^(next)$ ]]; then
                 kodi_next
+                unset INPUT
                 kodi_main
             fi
             if [[ "$INPUT" =~ ^(iptv)$ ]]; then
@@ -260,7 +262,7 @@ kodi_main() {
             echo "Searching for resolution: ${HEIGHT}p" >&2
             url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || error "No videos found"
         else
-            echo "Searching for BEST resolution..." >&2
+            echo "Searching for resolution: BEST" >&2
             best="$($ytdl -g "$INPUT")" || error "No videos found or not supported by youtube-dl"
         fi
 
