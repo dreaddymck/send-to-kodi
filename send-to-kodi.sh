@@ -17,9 +17,15 @@ Options:
 
   -s|--stop              stop kodi playback
   -n|--next              next kodi playback
-  --active               Kodi playlist id
+  --active               display Kodi active playlist id
   --iptv                 load iptv interface
   -g                     enable zenity gui (default disabled)
+
+Commands:
+  stop                   stop kodi playback
+  next                   next kodi playback
+  active                 display Kodi active playlist id
+  iptv                   load iptv interface    
 
 Override settings with ~/.sendtokodi 
 
@@ -125,6 +131,7 @@ cleanup() {
 }
 
 kodi_stop() {
+    kodi_get_active
     if ((active_player)); then
         echo "Request stop:" >&2
         kodi_request '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": '"$active_player"' }, "id":1}'
@@ -132,6 +139,7 @@ kodi_stop() {
     unset INPUT
 }
 kodi_next() {
+    kodi_get_active
     if ((active_player)); then
         echo "Request next:" >&2
         kodi_request '{"jsonrpc": "2.0", "method": "Player.GoTo","params": { "playerid": '"$active_player"', "to":"next" }, "id":1}'
@@ -143,7 +151,7 @@ kodi_get_active() {
     [[ $? ]] || error "Failed to send - is Kodi running?"
     if [[ $response ]]; then
         active_player=$(echo $response | jq -c '.result[] | select(.type | contains("video")).playerid')
-        echo "Active Player ID: $active_player"
+        # echo "Active Player ID: $active_player"
     fi
 }
 kodi_request(){
@@ -152,13 +160,13 @@ kodi_request(){
     ! [[ $response =~ '"error":' ]] || error $response
 
 }
-main() {
+kodi_main() {
 
     if [ -z $INPUT ]; then
 
         if ((GUI)); then
             INPUT="$(zenity --entry --title "Send to Kodi" --text "Paste a URL or press OK to select a file")" || exit
-            [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || main$()
+            [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || exit
         else
             printf 'Enter[url,path or cmd]: ' >&2
             read INPUT
@@ -168,11 +176,11 @@ main() {
             fi
             if [[ "$INPUT" =~ ^(stop|halt)$ ]]; then
                 kodi_stop
-                main
+                kodi_main
             fi
             if [[ "$INPUT" =~ ^(next)$ ]]; then
                 kodi_next
-                main
+                kodi_main
             fi
             if [[ "$INPUT" =~ ^(iptv)$ ]]; then
                 unset INPUT
@@ -181,15 +189,15 @@ main() {
             if [[ "$INPUT" =~ ^(active)$ ]]; then
                 unset INPUT
                 kodi_get_active
-                main
+                kodi_main
             fi
             if [[ "$INPUT" =~ ^(help)$ ]]; then
                 unset INPUT
                 show_help
-                main
+                kodi_main
             fi
             if [[ -z $INPUT ]]; then
-                main
+                kodi_main
             fi
         fi
     fi
@@ -249,7 +257,7 @@ main() {
         #echo "Looking for compatible video..." >&2
         #url="$(youtube-dl -gf best "$INPUT")"
         if ((HEIGHT)); then
-            echo "Searching for ${HEIGHT}p resolution" >&2
+            echo "Searching for resolution: ${HEIGHT}p" >&2
             url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || error "No videos found"
         else
             echo "Searching for BEST resolution..." >&2
@@ -299,8 +307,6 @@ main() {
 
     unset INPUT
 
-    echo "Done" >&2
-
     # Maybe wait for server (trap will kill it on EXIT)
     if [[ $TWISTED_PID ]]; then
         if ((GUI)); then
@@ -310,7 +316,7 @@ main() {
             wait
         fi
     fi
-    main
+    kodi_main
 }
 
 shopt -s nocasematch
@@ -328,7 +334,6 @@ shopt -s nocasematch
     error "youtube-dl and yt-dlp not installed"
 
 # settings
-#
 GUI=0
 DOWNLOAD_DIR=.
 KODI_YOUTUBE=0
@@ -338,13 +343,13 @@ REMOTE=""
 LOGIN=""
 HOST_NAME=""
 HEIGHT=""
-# external settings definitions
+# settings
+# settings override
 SENDTOKODI_CONF=~/.sendtokodi
 if [[ -f "$SENDTOKODI_CONF" ]]; then
     source $SENDTOKODI_CONF
 fi
-#
-# settings
+# settings override
 
 while [[ $* ]]; do
     case "$1" in
@@ -352,13 +357,11 @@ while [[ $* ]]; do
         show_help
         exit
         ;;
-    -s | --stop)
-        kodi_get_active
+    -s | --stop)        
         kodi_stop
         exit
         ;;
     -n | --next)
-        kodi_get_active
         kodi_next
         exit
         ;;
@@ -394,4 +397,4 @@ done
 
 [[ $REMOTE ]] || error "No hostname specified, see --help"
 
-main
+kodi_main
