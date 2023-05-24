@@ -18,6 +18,8 @@ Options:
   -s|--stop              stop kodi playback
   -g                     enable zenity gui (default disabled)
 
+Override settings with ~/.sendtokodi 
+
 Environment variables:
   TWISTED_PATH           Path to python-twisted webserver
 
@@ -26,6 +28,7 @@ Dependencies:
   zenity                 Graphical interface
   youtube-dl or yt-dlp   Support for hunderds of sites
   python-twisted         Local media sharing and high quality downloads
+  iptv                   CLI IPTV player for M3U playlists in your terminal.
   PhantomJS              Scriptable Headless Browser
 EOF
 }
@@ -121,14 +124,6 @@ cleanup() {
 kodi_stop() {
     if ((active_player)); then
         echo "Request stop:" >&2
-        # # curl -X POST -H 'Content-Type: application/json' -u "kodi:kodi" -d '{"jsonrpc": "2.0", "method": "Player.Stop", "id":1, "params": { "playerid": 0 }, "id":1}}' "http://192.168.0.201:8080/jsonrpc"
-        # response="$(curl -X POST -H 'Content-Type: application/json' \
-        #     ${LOGIN:+--user "$LOGIN"} \
-        #     -d '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": '"$active_player"' }, "id":1}' \
-        #     "http://$REMOTE/jsonrpc" 2>/dev/null)"
-
-        # ! [[ $response =~ '"error":' ]] || error $response
-
         kodi_request '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": '"$active_player"' }, "id":1}'
     fi
     unset INPUT
@@ -136,29 +131,13 @@ kodi_stop() {
 kodi_next() {
     if ((active_player)); then
         echo "Request next:" >&2
-        # curl -X POST -H 'Content-Type: application/json' -u "kodi:kodi" -d '{"jsonrpc": "2.0", "method": "Player.GoTo","params": { "playerid":0,"to":"next" }, "id":1}}' "http://192.168.0.201:8080/jsonrpc"
-        # response="$(curl -X POST -H 'Content-Type: application/json' \
-        #     ${LOGIN:+--user "$LOGIN"} \
-        #     -d '{"jsonrpc": "2.0", "method": "Player.GoTo","params": { "playerid": '"$active_player"', "to":"next" }, "id":1}' \
-        #     "http://$REMOTE/jsonrpc" 2>/dev/null)"
-
-        # ! [[ $response =~ '"error":' ]] || error $response
         kodi_request '{"jsonrpc": "2.0", "method": "Player.GoTo","params": { "playerid": '"$active_player"', "to":"next" }, "id":1}'
     fi
     unset INPUT
 }
 kodi_get_active() {
-    # response=curl -X POST -H 'Content-Type: application/json' -u "kodi:kodi" -d '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}' "http://192.168.0.201:8080/jsonrpc"
-    # | jq -c '.result[] | select(.type | contains("video")).playerid'
-    # response="$(curl -X POST -H 'Content-Type: application/json' \
-    #     ${LOGIN:+--user "$LOGIN"} \
-    #     -d '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}' \
-    #     "http://$REMOTE/jsonrpc" 2>/dev/null)"
-
     kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}'
-
     [[ $? ]] || error "Failed to send - is Kodi running?"
-
     if [[ $response ]]; then
         active_player=$(echo $response | jq -c '.result[] | select(.type | contains("video")).playerid')
         echo "Active Player ID: $active_player"
@@ -306,23 +285,11 @@ main() {
     if [[ $response == *'"type":"video"'* ]]; then
 
         echo "Queueing" >&2
-
-        # response="$(curl -X POST -H 'Content-Type: application/json' \
-        #     ${LOGIN:+--user "$LOGIN"} \
-        #     -d '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":1}' \
-        #     "http://$REMOTE/jsonrpc" 2>/dev/null)"
-
         kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":1}'
 
     else
 
         echo "Playing" >&2
-
-        # response="$(curl -X POST -H 'Content-Type: application/json' \
-        #     ${LOGIN:+--user "$LOGIN"} \
-        #     -d '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"'"$url"'"}},"id":1}' \
-        #     "http://$REMOTE/jsonrpc" 2>/dev/null)"
-
         kodi_request '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"'"$url"'"}},"id":1}'
 
     fi
