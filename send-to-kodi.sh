@@ -16,6 +16,9 @@ Options:
   -y                     Use Kodi's youtube addon instead of youtube-dl
 
   -s|--stop              stop kodi playback
+  -n|--next              next kodi playback
+  --active               Kodi playlist id
+  --iptv                 load iptv interface
   -g                     enable zenity gui (default disabled)
 
 Override settings with ~/.sendtokodi 
