@@ -133,6 +133,23 @@ cleanup() {
     [[ $TWISTED_PID ]] && kill "$TWISTED_PID"
 }
 
+# video search
+
+res_custom(){
+    echo "Searching for resolution: ${HEIGHT}p" >&2
+    url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || error "No $HEIGHT videos found"          
+}
+res_best(){
+    echo "Searching for resolution: BEST" >&2
+    best="$($ytdl -g "$INPUT")" || error "No BEST videos found"         
+}
+res_compat(){
+    echo "Looking for compatible" >&2
+    url="$($ytdl -f b "$INPUT")"  || error "No COMPATIBLE videos found"     # echo "Looking for compatible video..." >&2
+}
+
+# kodi commands
+
 kodi_stop() {
     kodi_get_active
     if ((active_player)); then
@@ -163,6 +180,8 @@ kodi_request(){
     ! [[ $response =~ '"error":' ]] || error $response
 
 }
+
+
 kodi_main() {
 
     if [ -z $INPUT ]; then
@@ -264,56 +283,52 @@ kodi_main() {
         #    in the script, because I have no sites to test on.
         #
 
-        # dash='^[^?]*\.mpd(\?|$)'
-        # echo "Looking for compatible video..." >&2
-        # url="$(youtube-dl -gf best "$INPUT")"
+         
+
         if ((HEIGHT)); then
-            echo "Searching for resolution: ${HEIGHT}p" >&2
-            url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || error "No videos found"
+            res_custom || res_compat
         else
-            echo "Searching for resolution: BEST" >&2
-            best="$($ytdl -g "$INPUT")" || error "No videos found or not supported by youtube-dl"
-        fi
+            res_best
+        fi        
+        
+        dash='^[^?]*\.mpd(\?|$)'
 
         # There is a better URL (but it will need some pre-processing)
-        # if [[ $url != "$best" ]]; then
-        #     video="$(head -n1 <<< "$best" | tail -n1)"
-        #     audio="$(head -n2 <<< "$best" | tail -n1)"
+        if [[ $url != "$best" ]]; then
+            video="$(head -n1 <<< "$best" | tail -n1)"
+            audio="$(head -n2 <<< "$best" | tail -n1)"
 
-        # # MPEG-DASH question
-        # if [[ $video == "$audio" && $video =~ $dash ]]; then
-        #     [[ -z $url || $url =~ $dash ]] || question "Use MPEG-DASH for better quality?" && url="$video"
+            # MPEG-DASH question
+            if [[ $video == "$audio" && $video =~ $dash ]]; then
+                # [[ -z $url || $url =~ $dash ]] || question "Use MPEG-DASH for better quality?" && url="$video"
+                [[ -z $url || $url =~ $dash ]] || url="$video"
 
-        # # Download with youtube-dl
-        # elif [[ -z $url ]] || question "Download for better quality?"; then
-        #     download_and_serve "$INPUT"
-        #     url="http://$HOST_NAME:$SHARE_PORT/media"
-        # fi
-        # fi
+            # Download with youtube-dl
+            elif [[ -z $url ]]; then
+                download_and_serve "$INPUT"
+                url="http://$HOST_NAME:$SHARE_PORT/media"
+            fi
+        fi
 
-        # # MPEG-DASH
-        # # Do this down here since both $url and $best can be a MPD
-        # if [[ $url =~ $dash ]]; then
-        #     serve  # create TMP_DIR
-        #     (echo '#KODIPROP:inputstream=inputstream.adaptive'
-        #     echo '#KODIPROP:inputstream.adaptive.manifest_type=mpd'
-        #     echo "$video") > "$TMP_DIR/media.strm"
-        #     url="http://$HOST_NAME:$SHARE_PORT/media.strm"
-        # fi
+        # MPEG-DASH
+        # Do this down here since both $url and $best can be a MPD
+        if [[ $url =~ $dash ]]; then
+            serve  # create TMP_DIR
+            (echo '#KODIPROP:inputstream=inputstream.adaptive'
+            echo '#KODIPROP:inputstream.adaptive.manifest_type=mpd'
+            echo "$video") > "$TMP_DIR/media.strm"
+            url="http://$HOST_NAME:$SHARE_PORT/media.strm"
+        fi
     fi
 
     kodi_get_active
 
     if [[ $response == *'"type":"video"'* ]]; then
-
         echo "Queueing" >&2
         kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":1}'
-
     else
-
         echo "Playing" >&2
         kodi_request '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"'"$url"'"}},"id":1}'
-
     fi
 
     unset INPUT
