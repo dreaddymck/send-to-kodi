@@ -1,5 +1,8 @@
 #!/bin/bash
 
+HISTFILE=~/.send_to_kodi_history
+set -o history
+
 show_help() {
     cat <<EOF >&2
 Usage: send-to-kodi.sh [options] -r HOST:PORT [URL|FILE]
@@ -150,13 +153,13 @@ kodi_get_active() {
     if [[ $response ]]; then
         active_player=$(echo $response | jq -c '.result[] | select(.type | contains("video")).playerid')
     fi
-    echo "Active Player ID: $active_player"
+    # echo "Player id: $active_player"
 }
 kodi_request(){
     
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1"  "http://$REMOTE/jsonrpc" 2>/dev/null)"
-    echo $1 >&2
-    echo $response >&2
+    # echo $1 >&2
+    # echo $response >&2
     ! [[ $response =~ '"error":' ]] || error $response
 
 }
@@ -166,10 +169,15 @@ kodi_main() {
 
         if ((GUI)); then
             INPUT="$(zenity --entry --title "Send to Kodi" --text "Paste a URL or press OK to select a file")" || exit
-            [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || exit
+            [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || kodi_main
         else
-            printf 'Enter[url,path or cmd]: ' >&2
-            read INPUT
+            # printf 'Enter[url/path/cmd]: ' >&2
+            # read INPUT
+            
+            read -r -e -d $'\n' -p 'Enter[url/path/cmd]: ' INPUT
+
+            history -s "$INPUT"
+
             if [[ "$INPUT" =~ ^(exit|quit)$ ]]; then
                 unset INPUT
                 exit
@@ -199,7 +207,7 @@ kodi_main() {
                 kodi_main
             fi
             if [[ -z $INPUT ]]; then
-                kodi_main
+                kodi_main                
             fi
         fi
     fi
@@ -255,9 +263,10 @@ kodi_main() {
         #    Kodi has support for these, the same way 3. is done, but I haven't implemented it
         #    in the script, because I have no sites to test on.
         #
-        dash='^[^?]*\.mpd(\?|$)'
-        #echo "Looking for compatible video..." >&2
-        #url="$(youtube-dl -gf best "$INPUT")"
+
+        # dash='^[^?]*\.mpd(\?|$)'
+        # echo "Looking for compatible video..." >&2
+        # url="$(youtube-dl -gf best "$INPUT")"
         if ((HEIGHT)); then
             echo "Searching for resolution: ${HEIGHT}p" >&2
             url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || error "No videos found"

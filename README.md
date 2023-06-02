@@ -1,4 +1,4 @@
-# Send to Kodi
+# Send to Kodi 
 
 ![Screenshot of dialog box](https://user-images.githubusercontent.com/7693838/119225728-d94f1000-bb05-11eb-9ff2-5a32d2974f55.png)
 
