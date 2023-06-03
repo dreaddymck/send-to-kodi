@@ -294,7 +294,7 @@ kodi_main() {
         dash='^[^?]*\.mpd(\?|$)'
 
         # There is a better URL (but it will need some pre-processing)
-        if ((url)) && ((best)) && [[ $url != "$best" ]]; then
+        if ((best)); then
 
             video="$(head -n1 <<< "$best" | tail -n1)"
             audio="$(head -n2 <<< "$best" | tail -n1)"
