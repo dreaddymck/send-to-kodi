@@ -30,18 +30,17 @@ Commands:
   active                 display Kodi active playlist id
   iptv                   load iptv interface    
 
-Override settings with ~/.sendtokodi 
+Settings override:       ~/.sendtokodi 
 
 Environment variables:
   TWISTED_PATH           Path to python-twisted webserver
 
 Dependencies:
   jq                     JSON Processing
-  zenity                 Graphical interface
   youtube-dl or yt-dlp   Support for hunderds of sites
   python-twisted         Local media sharing and high quality downloads
-  iptv                   CLI IPTV player for M3U playlists in your terminal.
-  PhantomJS              Scriptable Headless Browser
+  zenity                 Graphical interface (optional)
+  PhantomJS              Scriptable Headless Browser (optional)
 EOF
 }
 
@@ -134,22 +133,21 @@ cleanup() {
 }
 
 # video search
-
 res_custom(){
     echo "Searching for resolution: ${HEIGHT}p" >&2
-    url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || error "No $HEIGHT videos found"          
-}
-res_best(){
-    echo "Searching for resolution: BEST" >&2
-    best="$($ytdl -g "$INPUT")" || error "No BEST videos found"         
+    url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || echo "No $HEIGHT videos found" >&2        
 }
 res_compat(){
     echo "Looking for compatible" >&2
-    url="$($ytdl -f b "$INPUT")"  || error "No COMPATIBLE videos found"     # echo "Looking for compatible video..." >&2
+    url="$($ytdl -gf b "$INPUT")"  || echo "No COMPATIBLE videos found" >&2
+}
+res_best(){
+    echo "Searching for resolution: BEST" >&2
+    best="$($ytdl -g "$INPUT")" || echo "No BEST videos found" >&2      
 }
 
-# kodi commands
 
+# kodi commands
 kodi_stop() {
     kodi_get_active
     if ((active_player)); then
@@ -172,13 +170,11 @@ kodi_get_active() {
     fi
     # echo "Player id: $active_player"
 }
-kodi_request(){
-    
+kodi_request(){    
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1"  "http://$REMOTE/jsonrpc" 2>/dev/null)"
     # echo $1 >&2
     # echo $response >&2
     ! [[ $response =~ '"error":' ]] || error $response
-
 }
 
 
@@ -281,20 +277,25 @@ kodi_main() {
         # 5. ISM or HLS (?)
         #    Kodi has support for these, the same way 3. is done, but I haven't implemented it
         #    in the script, because I have no sites to test on.
-        #
-
-         
+        # 
 
         if ((HEIGHT)); then
-            res_custom || res_compat
-        else
-            res_best
-        fi        
-        
+            res_custom
+        fi
+
+        if [[ -z $url ]]; then
+            res_compat
+        fi          
+
+        if [[ -z $url ]]; then
+            res_best || error "No compatible videos"  >&2
+        fi          
+
         dash='^[^?]*\.mpd(\?|$)'
 
         # There is a better URL (but it will need some pre-processing)
-        if [[ $url != "$best" ]]; then
+        if ((url)) && ((best)) && [[ $url != "$best" ]]; then
+
             video="$(head -n1 <<< "$best" | tail -n1)"
             audio="$(head -n2 <<< "$best" | tail -n1)"
 
@@ -371,9 +372,9 @@ HOST_NAME=""
 HEIGHT=""
 # settings
 # settings override
-SENDTOKODI_CONF=~/.sendtokodi
-if [[ -f "$SENDTOKODI_CONF" ]]; then
-    source $SENDTOKODI_CONF
+SEND_TO_KODI_CONF=~/.sendtokodi
+if [[ -f "$SEND_TO_KODI_CONF" ]]; then
+    source $SEND_TO_KODI_CONF
 fi
 # settings override
 
@@ -421,6 +422,6 @@ while [[ $* ]]; do
     shift
 done
 
-[[ $REMOTE ]] || error "No hostname specified, see --help"
+[[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
 
 kodi_main
