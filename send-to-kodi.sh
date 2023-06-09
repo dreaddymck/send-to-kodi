@@ -132,20 +132,6 @@ cleanup() {
     [[ $TWISTED_PID ]] && kill "$TWISTED_PID"
 }
 
-# video search
-res_custom(){
-    echo "Searching for resolution: ${HEIGHT}p" >&2
-    url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || echo "No $HEIGHT videos found" >&2        
-}
-res_compat(){
-    echo "Looking for compatible" >&2
-    url="$($ytdl -gf b "$INPUT")"  || echo "No COMPATIBLE videos found" >&2
-}
-res_best(){
-    echo "Searching for resolution: BEST" >&2
-    best="$($ytdl -g "$INPUT")" || echo "No BEST videos found" >&2      
-}
-
 
 # kodi commands
 kodi_stop() {
@@ -280,15 +266,18 @@ kodi_main() {
         # 
 
         if ((HEIGHT)); then
-            res_custom
+            echo "Searching for resolution: ${HEIGHT}p" >&2
+            url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || echo "No $HEIGHT videos found" >&2        
         fi
 
         if [[ -z $url ]]; then
-            res_compat
+            echo "Looking for compatible" >&2
+            url="$($ytdl -gf b "$INPUT")"  || echo "No COMPATIBLE videos found"  >&2
         fi          
 
         if [[ -z $url ]]; then
-            res_best || error "No compatible videos"  >&2
+            echo "Searching for resolution: BEST" >&2
+            best="$($ytdl -g "$INPUT")" || echo "No BEST videos found" >&2 && unset INPUT && kodi_main
         fi          
 
         dash='^[^?]*\.mpd(\?|$)'
@@ -343,6 +332,9 @@ kodi_main() {
             wait
         fi
     fi
+    if((CYA)); then
+        exit
+    fi
     kodi_main
 }
 
@@ -377,6 +369,8 @@ if [[ -f "$SEND_TO_KODI_CONF" ]]; then
     source $SEND_TO_KODI_CONF
 fi
 # settings override
+
+CYA=""
 
 while [[ $* ]]; do
     case "$1" in
@@ -416,8 +410,10 @@ while [[ $* ]]; do
     -y) KODI_YOUTUBE=1 ;;
     -g) GUI=1 ;;
     -*) error "Unknown flag: $1" ;;
-    # *) INPUT="$1"; GUI=0          ;;
-    *) INPUT="$1" ;;
+    *) 
+        INPUT="$1"
+        CYA=1 
+        ;;
     esac
     shift
 done
