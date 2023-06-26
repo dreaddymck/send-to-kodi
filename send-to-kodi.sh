@@ -1,8 +1,5 @@
 #!/bin/bash
 
-HISTFILE=~/.send_to_kodi_history
-set -o history
-
 show_help() {
     cat <<EOF >&2
 Usage: send-to-kodi.sh [options] -r HOST:PORT [URL|FILE]
@@ -62,7 +59,7 @@ question() {
         zenity --question --ellipsize --text "$1"
     else
         printf '%s [y/N] ' "$1" >&2
-        read
+        read -r
         [[ $REPLY =~ y|Y ]]
     fi
 }
@@ -136,14 +133,14 @@ cleanup() {
 # kodi commands
 kodi_stop() {
     kodi_get_active
-    if ((active_player)); then
+    if [[ ! -z $active_player ]]; then
         echo "Request stop:" >&2
         kodi_request '{"jsonrpc": "2.0", "method":"Player.Stop", "params": { "playerid": '"$active_player"' }, "id":1}'
     fi
 }
 kodi_next() {
     kodi_get_active
-    if ((active_player)); then
+    if [[ ! -z $active_player ]]; then
         echo "Request next:" >&2
         kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"next" }, "id":1}'
     fi
@@ -152,20 +149,29 @@ kodi_get_active() {
     kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}'
     [[ $? ]] || error "Failed to send - is Kodi running?"
     if [[ $response ]]; then
-        active_player=$(echo $response | jq -c '.result[] | select(.type | contains("video")).playerid')
+        # echo "$response"  >&2
+        active_player=$(echo "$response" | jq -c '.result[] | select(.type | contains("video")).playerid')
     fi
     # echo "Player id: $active_player"
 }
+kodi_shutdown() {
+    echo "Request system shutdown:" >&2
+    kodi_request '{"jsonrpc": "2.0", "method": "System.Shutdown"}'
+}
+kodi_reboot() {
+    echo "Request system reboot:" >&2
+    kodi_request '{"jsonrpc": "2.0", "method": "System.Reboot"}'
+}
 kodi_request(){    
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1"  "http://$REMOTE/jsonrpc" 2>/dev/null)"
-    # echo $1 >&2
-    # echo $response >&2
+    echo "$1" >&2
+    echo "$response" >&2
     ! [[ $response =~ '"error":' ]] || error $response
 }
-
-
 kodi_main() {
 
+    set -o history
+    
     if [ -z $INPUT ]; then
 
         if ((GUI)); then
@@ -173,7 +179,7 @@ kodi_main() {
             [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || kodi_main
         else
             # printf 'Enter[url/path/cmd]: ' >&2
-            # read INPUT
+            # read INPUT  
             
             read -r -e -d $'\n' -p 'Enter[url/path/cmd]: ' INPUT
 
@@ -188,6 +194,16 @@ kodi_main() {
                 unset INPUT
                 kodi_main
             fi
+            if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
+                kodi_shutdown
+                unset INPUT
+                kodi_main
+            fi
+            if [[ "$INPUT" =~ ^(reboot)$ ]]; then
+                kodi_reboot
+                unset INPUT
+                kodi_main
+            fi                        
             if [[ "$INPUT" =~ ^(next)$ ]]; then
                 kodi_next
                 unset INPUT
@@ -386,6 +402,14 @@ while [[ $* ]]; do
         kodi_next
         exit
         ;;
+    --shutdown)
+        kodi_shutdown
+        exit
+        ;;        
+    --reboot)
+        kodi_reboot
+        exit
+        ;;                
     --iptv)
         iptv
         exit
@@ -419,5 +443,8 @@ while [[ $* ]]; do
 done
 
 [[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
+
+HISTFILE=~/.send_to_kodi_history
+
 
 kodi_main
