@@ -10,8 +10,9 @@ REMOTE=""
 LOGIN=""
 HOST_NAME=""
 HEIGHT=""
-# settings override
-if [[ -f "~/.sendtokodi" ]]; then
-    source "~/.sendtokodi"
-fi
 CYA=""
+
+SEND_TO_KODI_CONF=~/.sendtokodi
+if [[ -f "$SEND_TO_KODI_CONF" ]]; then
+    source $SEND_TO_KODI_CONF
+fi

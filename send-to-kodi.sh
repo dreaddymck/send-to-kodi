@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SEND_TO_KODI_DIR="$(dirname "$(readlink -f "$0")")"
-echo "$SEND_TO_KODI_DIR" >&2
+# echo "$SEND_TO_KODI_DIR" >&2
 source "$SEND_TO_KODI_DIR/lib/show_help.sh"
 source "$SEND_TO_KODI_DIR/lib/error_question_cleanup.sh"
 source "$SEND_TO_KODI_DIR/lib/requests.sh"
@@ -10,8 +10,6 @@ source "$SEND_TO_KODI_DIR/lib/kodi_main.sh"
 source "$SEND_TO_KODI_DIR/lib/checks.sh"
 source "$SEND_TO_KODI_DIR/lib/defines.sh"
 
-# SEND_TO_KODI_DIR="$(dirname "$(readlink -f "$0")")"
-# echo "$SEND_TO_KODI_DIR"
 # IPTV=iptv
 # if [[ -f "$SEND_TO_KODI_DIR/$IPTV" ]]; then
 #     source "$SEND_TO_KODI_DIR/$IPTV"
