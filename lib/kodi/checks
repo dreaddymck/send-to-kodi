@@ -10,3 +10,7 @@ shopt -s nocasematch
         ytdl="$(which yt-dlp)"
     } ||
     error "youtube-dl and yt-dlp not installed"
+
+command -v fzf >/dev/null 2>&1 || {
+    error "fzf required but not installed"
+}    
