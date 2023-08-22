@@ -4,15 +4,6 @@ command -v fzf >/dev/null 2>&1 || {
     exit 1
 }
 
-m3u=$1
-
-config_path="$HOME/.config/iptv/"
-channels_file="$config_path/channels"
-m3u_url_file="$config_path/m3u_url"
-tmp_playlist="/tmp/iptvplaylist"
-
-mkdir -p "$config_path"
-
 usage() {
     cat <<EOF
 usage: iptv [M3U_URL]
@@ -85,6 +76,14 @@ iptv_main() {
     iptv_send $selected_channel_url
     iptv_main
 }
+
+m3u=$1
+config_path="$HOME/.config/iptv/"
+channels_file="$config_path/channels"
+m3u_url_file="$config_path/m3u_url"
+tmp_playlist="/tmp/iptvplaylist"
+
+mkdir -p "$config_path"
 
 if [ -z "$m3u" ] && [ ! -s "$channels_file" ]; then
     usage

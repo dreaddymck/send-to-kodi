@@ -2,21 +2,7 @@
 
 SEND_TO_KODI_DIR="$(dirname "$(readlink -f "$0")")"
 # echo "$SEND_TO_KODI_DIR" >&2
-source "$SEND_TO_KODI_DIR/lib/kodi/show_help"
-source "$SEND_TO_KODI_DIR/lib/kodi/error_question_cleanup"
-source "$SEND_TO_KODI_DIR/lib/kodi/requests"
-source "$SEND_TO_KODI_DIR/lib/kodi/serve"
-source "$SEND_TO_KODI_DIR/lib/kodi/kodi_main"
-source "$SEND_TO_KODI_DIR/lib/kodi/checks"
-source "$SEND_TO_KODI_DIR/lib/kodi/defines"
-source "$SEND_TO_KODI_DIR/lib/iptv/iptv_channels"
-source "$SEND_TO_KODI_DIR/lib/iptv/iptv_send"
-source "$SEND_TO_KODI_DIR/lib/iptv/iptv_main"
-
-# IPTV=iptv
-# if [[ -f "$SEND_TO_KODI_DIR/$IPTV" ]]; then
-#     source "$SEND_TO_KODI_DIR/$IPTV"
-# fi
+source "$SEND_TO_KODI_DIR/lib/source"
 
 while [[ $* ]]; do
     case "$1" in

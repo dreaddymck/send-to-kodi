@@ -2,10 +2,10 @@
 
 kodi_main() {
 
-    set -o history
+    # set -o history
     
     if [ -z $INPUT ]; then
-
+        set -o history
         if ((GUI)); then
             INPUT="$(zenity --entry --title "Send to Kodi" --text "Paste a URL or press OK to select a file")" || exit
             [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || kodi_main
@@ -160,10 +160,13 @@ kodi_main() {
 
     if [[ $response == *'"type":"video"'* ]]; then
         echo "Queueing" >&2
-        kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":1}'
+        kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":0}'
     else
         echo "Playing" >&2
-        kodi_request '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"'"$url"'"}},"id":1}'
+        # kodi_request '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"'"$url"'"}},"id":0}'
+        kodi_request '[{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}},
+{"jsonrpc":"2.0","id":0,"method":"Playlist.Add","params":{"playlistid":0,"item":{"file":"'"$url"'"}}},
+{"jsonrpc":"2.0","id":0,"method":"Player.Open","params":{"item":{"playlistid":0,"position":0}}}]'
     fi
 
     unset INPUT

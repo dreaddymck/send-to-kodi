@@ -16,3 +16,10 @@ SEND_TO_KODI_CONF=~/.sendtokodi
 if [[ -f "$SEND_TO_KODI_CONF" ]]; then
     source $SEND_TO_KODI_CONF
 fi
+
+#iptv def
+config_path="$HOME/.config/iptv/"
+channels_file="$config_path/channels"
+m3u_url_file="$config_path/m3u_url"
+tmp_playlist="/tmp/iptvplaylist"
+mkdir -p "$config_path"
