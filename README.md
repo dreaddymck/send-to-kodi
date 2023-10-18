@@ -16,7 +16,7 @@
    - *Youtube add-on* for better youtube support.
 
 1. Install on your Linux machine:
-   - `youtube-dl or yt-dlp` to add support for hundreds of video sites.   
+   - `yt-dlp` to add support for hundreds of video sites.   
    - `python-twisted` to enable local file sharing and MPEG-DASH support.
    - `jq`                      JSON Processing
    - `zenity`                  Graphical interface
@@ -26,7 +26,7 @@
 
 1. Now you can run it from the command line like so:
 
-       ./send-to-kodi.sh -r kodibox:8080 -u kodi:SomePassword https://vimeo.com/174312494
+       ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
 
 
 1. Or create config file ~/.sendtokodi and set values:

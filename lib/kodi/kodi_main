@@ -112,17 +112,17 @@ kodi_main() {
 
         if ((HEIGHT)); then
             echo "Searching for resolution: ${HEIGHT}p" >&2
-            url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || echo "No $HEIGHT videos found" >&2        
+            url="$($ytdl -gf best[height=$HEIGHT] "$INPUT")" || echo "No $HEIGHT found" >&2        
         fi
 
         if [[ -z $url ]]; then
-            echo "Looking for compatible" >&2
-            url="$($ytdl -gf b "$INPUT")"  || echo "No COMPATIBLE videos found"  >&2
+            echo "Looking for WORST" >&2
+            url="$($ytdl -gf worst "$INPUT")"  || echo "No WORST found"  >&2
         fi          
 
         if [[ -z $url ]]; then
-            echo "Searching for resolution: BEST" >&2
-            best="$($ytdl -g "$INPUT")" || echo "No BEST videos found" >&2 && unset INPUT && kodi_main
+            echo "Searching for BEST resolution" >&2
+            best="$($ytdl -gf "$INPUT")" || echo "No BEST found" >&2 && unset INPUT && kodi_main
         fi          
 
         dash='^[^?]*\.mpd(\?|$)'
