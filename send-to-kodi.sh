@@ -52,7 +52,7 @@ while [[ $* ]]; do
     -*) error "Unknown flag: $1" ;;
     *)
         INPUT="$1"
-        CYA=1
+        # CYA=1
         ;;
     esac
     shift

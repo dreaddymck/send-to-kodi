@@ -1,6 +1,6 @@
 # Send to Kodi 
 
-* Send compatible youtube-dl/yt-dlp streams to Kodi.
+* Send compatible yt-dlp/youtube-dl streams to Kodi.
 * Send compatible local media to Kodi.
 * MPEG-DASH (high quality video) support.
 * Kodi add-ons may be required for proprietory media streams.
