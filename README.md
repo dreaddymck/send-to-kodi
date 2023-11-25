@@ -55,31 +55,33 @@ Send a local or online video to Kodi. Run without URL to get a GUI.
 In the GUI, you may prepend an URL with ! to disable resolving (like -x).
 
 1. Options:
-  -d DIRECTORY           Temporary download directory for high quality streaming
-  -l PORT                Local port number used for file sharing (default 8080)
-  -r HOST:PORT           Kodi remote address
-  -u USERNAME:PASSWORD   Kodi login credentials
-  -x                     Do not try to resolve URL, just send it
-  -y                     Use Kodi's youtube addon instead of youtube-dl
 
-  -s|--stop              stop kodi playback
-  -n|--next              next kodi playback
-  --shutdown
-  --reboot
-  --active               display Kodi active playlist id
-  --version              display git verion and last log entry
-  --iptv                 load iptv interface
-  -g                     enable zenity gui (default disabled)
+       -d DIRECTORY           Temporary download directory for high quality streaming
+       -l PORT                Local port number used for file sharing (default 8080)
+       -r HOST:PORT           Kodi remote address
+       -u USERNAME:PASSWORD   Kodi login credentials
+       -x                     Do not try to resolve URL, just send it
+       -y                     Use Kodi's youtube addon instead of youtube-dl
 
-Commands:
-  help                   display this help menu
-  stop                   stop kodi playback
-  next                   next kodi playback
-  shutdown
-  reboot
-  active                 display Kodi active playlist id
-  version                display git verion and last log entry
-  iptv                   load iptv interface (work in progress)
+       -s|--stop              stop kodi playback
+       -n|--next              next kodi playback
+       --shutdown
+       --reboot
+       --active               display Kodi active playlist id
+       --version              display git verion and last log entry
+       --iptv                 load iptv interface
+       -g                     enable zenity gui (default disabled)
+
+1. Commands:
+
+       help                   display this help menu
+       stop                   stop kodi playback
+       next                   next kodi playback
+       shutdown
+       reboot
+       active                 display Kodi active playlist id
+       version                display git verion and last log entry
+       iptv                   load iptv interface (work in progress)
   
 ## Zenity dialogue
 
