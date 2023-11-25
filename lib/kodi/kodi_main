@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kodi_main() {
+function kodi_main() {
     # set -o history    
     if [ -z $INPUT ]; then
         set -o history
@@ -48,6 +48,11 @@ kodi_main() {
                 show_help
                 kodi_main
             fi
+            if [[ "$INPUT" =~ ^(version)$ ]]; then
+                unset INPUT
+                version
+                kodi_main
+            fi            
             if [[ -z $INPUT ]]; then
                 kodi_main                
             fi
@@ -178,6 +183,8 @@ kodi_main() {
             url="http://$HOST_NAME:$SHARE_PORT/media.strm"
         fi
     fi
+
+    check_url $url
 
     kodi_get_active
 

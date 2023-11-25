@@ -2,7 +2,7 @@
 
 # Show a error dialog or message
 # args: MESSAGE
-error() {
+function error() {
     if ((GUI)); then
         zenity --error --ellipsize --text "$1"
     else
@@ -12,7 +12,7 @@ error() {
 }
 # Show a question dialog or prompt
 # args: MESSAGE
-question() {
+function question() {
     if ((GUI)); then
         zenity --question --ellipsize --text "$1"
     else
@@ -22,7 +22,7 @@ question() {
     fi
 }
 # The EXIT trap
-cleanup() {
+function cleanup() {
     if [[ -d $TMP_DIR ]]; then
         [[ -L $TMP_DIR/media ]] && rm "$TMP_DIR/media"
         [[ -f $TMP_DIR/media.strm ]] && rm "$TMP_DIR/media.strm"

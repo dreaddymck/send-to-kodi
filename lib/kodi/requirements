@@ -8,5 +8,7 @@ if [[ $? != 0 ]]; then
 fi
 type fzf &>/dev/null
 if [[ $? != 0 ]]; then
-   error "fzf install required"
+    error "fzf install required"
 fi
+
+

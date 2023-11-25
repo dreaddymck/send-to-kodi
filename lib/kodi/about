@@ -1,0 +1,11 @@
+#!/bin/bash
+
+function show_help() {
+    less "$SEND_TO_KODI_DIR/README.md" 
+}
+
+function version() {
+    cd "$SEND_TO_KODI_DIR"
+    echo "master: " $(git describe --abbrev=7 --always  --long --match v* master) 
+    echo "origin/master: " $(git describe --abbrev=7 --always  --long --match v* origin/master) 
+}
