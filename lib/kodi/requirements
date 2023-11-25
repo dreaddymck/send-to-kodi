@@ -4,11 +4,17 @@ shopt -s nocasematch
 
 type yt-dlp &>/dev/null
 if [[ $? != 0 ]]; then
-    error "yt-dlp install required"
+    error "yt-dlp required"
 fi
-type fzf &>/dev/null
+type jq &>/dev/null
 if [[ $? != 0 ]]; then
-    error "fzf install required"
+    error "jq required"
 fi
+
+## moved to iptv_main
+# type fzf &>/dev/null
+# if [[ $? != 0 ]]; then
+#     error "fzf required"
+# fi
 
 

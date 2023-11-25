@@ -2,6 +2,11 @@
 
 iptv_main() {
 
+    type fzf &>/dev/null
+    if [[ $? != 0 ]]; then
+        error "fzf required"
+    fi
+
     selected=$(cat "$channels_file" | sed 's/ [^ ]*$//' | fzf)
 
     if [ ! -n "$selected" ]; then
