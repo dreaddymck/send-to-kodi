@@ -81,6 +81,7 @@ In the GUI, you may prepend an URL with ! to disable resolving (like -x).
         reboot
         active                 display Kodi active playlist id
         version                display git verion and last log entry
+        exit|quit
         iptv                   load iptv interface (work in progress)
 
 1. FZF syntax:
@@ -92,7 +93,9 @@ In the GUI, you may prepend an URL with ! to disable resolving (like -x).
         !fire	     inverse-exact-match	        Items that do not include fire
         !^music      inverse-prefix-exact-match	    Items that do not start with music
         !.mp3$       inverse-suffix-exact-match	    Items that do not end with .mp3       
-  
+
+1. Note: to exit the iptv interface: clear screen with bad search then select empty field
+
 ## Zenity dialogue
 
  ![Screenshot of dialog box](https://user-images.githubusercontent.com/7693838/119225728-d94f1000-bb05-11eb-9ff2-5a32d2974f55.png)
