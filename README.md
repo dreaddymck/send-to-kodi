@@ -1,6 +1,6 @@
 # Send to Kodi 
 
-* Send compatible YTDLP/youtube-dl streams to Kodi.
+* Send compatible yt-dlp/youtube-dl streams to Kodi.
 * Send compatible local media to Kodi.
 * MPEG-DASH (high quality video) support.
 * Kodi add-ons may be required for proprietory media streams.
@@ -16,7 +16,7 @@
    * *Youtube add-on* for better youtube support.
 
 1. Install on your Linux machine:
-   * `YTDLP` to add support for hundreds of video sites.
+   * `yt-dlp` to add support for hundreds of video sites.
    * `python-twisted` to enable local file sharing and MPEG-DASH support.
    * `jq`                      JSON Processing
    * `zenity`                  Graphical interface
