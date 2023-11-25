@@ -4,7 +4,7 @@
 * Send compatible local media to Kodi.
 * MPEG-DASH (high quality video) support.
 * Kodi add-ons may be required for proprietory media streams.
-* Zenity input interface 
+* Zenity input interface
 * IPTV m3u interface (__Work In Progress__)
 
 ## Installation
@@ -18,6 +18,7 @@
 1. Install on your Linux machine:
    * `yt-dlp`           to add support for hundreds of video sites.
    * `jq`               JSON Processing
+   * `fzf`              required for iptv interface (optional) - https://github.com/junegunn/fzf
    * `python-twisted`   to enable local file sharing and MPEG-DASH support (optional).
    * `zenity`           Graphical interface (optional)
    * `PhantomJS`        Scriptable Headless Browser (optional)
@@ -63,19 +64,23 @@ In the GUI, you may prepend an URL with ! to disable resolving (like -x).
 
   -s|--stop              stop kodi playback
   -n|--next              next kodi playback
+  --shutdown
+  --reboot
   --active               display Kodi active playlist id
   --version              display git verion and last log entry
   --iptv                 load iptv interface
   -g                     enable zenity gui (default disabled)
 
 Commands:
+  help                   display this help menu
   stop                   stop kodi playback
   next                   next kodi playback
+  shutdown
+  reboot
   active                 display Kodi active playlist id
   version                display git verion and last log entry
   iptv                   load iptv interface (work in progress)
   
-
 ## Zenity dialogue
 
  ![Screenshot of dialog box](https://user-images.githubusercontent.com/7693838/119225728-d94f1000-bb05-11eb-9ff2-5a32d2974f55.png)
