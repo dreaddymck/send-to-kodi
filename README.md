@@ -74,14 +74,24 @@ In the GUI, you may prepend an URL with ! to disable resolving (like -x).
 
 1. Commands:
 
-       help                   display this help menu
-       stop                   stop kodi playback
-       next                   next kodi playback
-       shutdown
-       reboot
-       active                 display Kodi active playlist id
-       version                display git verion and last log entry
-       iptv                   load iptv interface (work in progress)
+        help                   display this help menu
+        stop                   stop kodi playback
+        next                   next kodi playback
+        shutdown
+        reboot
+        active                 display Kodi active playlist id
+        version                display git verion and last log entry
+        iptv                   load iptv interface (work in progress)
+
+1. FZF syntax:
+
+        sbtrkt       fuzzy-match	                Items that match sbtrkt
+        'wild        exact-match (quoted)	        Items that include wild
+        ^music       prefix-exact-match	            Items that start with music
+        .mp3$        suffix-exact-match	            Items that end with .mp3
+        !fire	     inverse-exact-match	        Items that do not include fire
+        !^music      inverse-prefix-exact-match	    Items that do not start with music
+        !.mp3$       inverse-suffix-exact-match	    Items that do not end with .mp3       
   
 ## Zenity dialogue
 
