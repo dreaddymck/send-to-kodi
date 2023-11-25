@@ -18,9 +18,11 @@ function kodi_next() {
 function kodi_get_active() {
     kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":0}'
     [[ $? ]] || error "Failed to send - is Kodi running?"
+    unset active_player
     if [[ $response ]]; then
         # echo "$response"  >&2
-        active_player=$(echo "$response" | jq -c '.result[] | select(.type | contains("video")).playerid')
+        # active_player=$(echo "$response" | jq -c '.result[] | select(.type | contains("video")).playerid')
+        active_player=$(echo "$response" | jq -c '.result[] | select(.type).playerid')
     fi
     # echo "Player id: $active_player"
 }

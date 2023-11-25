@@ -188,7 +188,8 @@ function kodi_main() {
 
     kodi_get_active
 
-    if [[ $response == *'"type":"video"'* ]]; then
+    # if [[ $active_player == *'"type":"video"'* ]]; then
+    if ((active_player)); then
         echo "Queueing" >&2
         kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":0}'
     else
