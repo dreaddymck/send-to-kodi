@@ -1,16 +1,12 @@
 #!/bin/bash
+
 shopt -s nocasematch
 
-{
-    type youtube-dl &>/dev/null
-    ytdl="$(which youtube-dl)"
-} ||
-    {
-        type yt-dlp &>/dev/null
-        ytdl="$(which yt-dlp)"
-    } ||
-    error "youtube-dl and yt-dlp not installed"
-
-command -v fzf >/dev/null 2>&1 || {
-    error "fzf required but not installed"
-}    
+type yt-dlp &>/dev/null
+if [[ $? != 0 ]]; then
+    error "yt-dlp install required"
+fi
+type fzf &>/dev/null
+if [[ $? != 0 ]]; then
+   error "fzf install required"
+fi

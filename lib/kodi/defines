@@ -1,5 +1,7 @@
 #!/bin/bash
 
+YTDLP="$(which yt-dlp)"
+
 # settings
 GUI=0
 DOWNLOAD_DIR=.
@@ -11,6 +13,7 @@ LOGIN=""
 HOST_NAME=""
 HEIGHT=""
 CYA=""
+STRICT=0 # enforce preferred options
 
 SEND_TO_KODI_CONF=~/.sendtokodi
 if [[ -f "$SEND_TO_KODI_CONF" ]]; then
