@@ -30,6 +30,10 @@ while [[ $* ]]; do
         iptv
         exit
         ;;
+    -v | --version)
+        version
+        exit
+        ;;        
     -d)
         DOWNLOAD_DIR="$2"
         shift
