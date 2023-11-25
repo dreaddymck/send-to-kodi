@@ -7,21 +7,27 @@ iptv_main() {
         error "fzf required"
     fi
 
+    iptv_load
+
     selected=$(cat "$channels_file" | sed 's/ [^ ]*$//' | fzf)
 
-    if [ ! -n "$selected" ]; then
-        exit 1
-    fi
-    if [[ "$selected" =~ ^(kodi)$ ]]; then
+    if [ -z "$selected" ]; then
         unset selected
         kodi_main
-    fi    
+    fi
+     
+    # if [[ "$selected" =~ ^(kodi)$ ]]; then
+    #     unset selected
+    #     kodi_main
+    # fi  
 
     selected_channel=$(echo "$selected" | sed 's/.*\(\[CH:[0-9]\+\]\).*/\1/')
     selected_channel_line=$(cat "$channels_file" | grep -F "$selected_channel")
     selected_channel_url=$(echo "$selected_channel_line" | grep -oE 'url:(.*)' | sed 's/url://' | tr -d '\r')
     selected_channel_name=$(echo "$selected_channel_line" | sed 's/\(.*\) url:.*/\1/')
 
+    check_url $selected_channel_url
+    
     printf "Sending %s to Kodi\n" "$selected_channel_name"
     iptv_send $selected_channel_url
     iptv_main

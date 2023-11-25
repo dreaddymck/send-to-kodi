@@ -27,7 +27,7 @@ while [[ $* ]]; do
         exit
         ;;
     --iptv)
-        iptv
+        iptv_main
         exit
         ;;
     -v | --version)

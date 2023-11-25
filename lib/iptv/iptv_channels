@@ -37,11 +37,16 @@ iptv_save_channels() {
 }
 
 iptv_load(){
-    if [ ! -z "$m3u" ]; then
+
+    if ! [ -f "$channels_file" ]; then
+        read -r -e -d $'\n' -p 'Enter iptv playlist[url]: ' m3u
+        check_url $m3u     
+    fi
+    
+    if [ -n "$m3u" ]; then
         echo "$m3u" >$m3u_url_file
         iptv_save_channels
-        echo "Playlist saved. Now run iptv again without a M3U URL."
-        exit
+        echo "Playlist saved."
     fi
 
     if [[ $(find "$channels_file" -mtime +1) ]]; then
