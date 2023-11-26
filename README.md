@@ -32,11 +32,11 @@ That provide the following features
 
 1. Environment variables: TWISTED_PATH - Path to python-twisted webserver
 
-1. Now you can run it from the command line like so:
+1. Run it from the command line like so:
 
        ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
 
-1. Or create config file ~/.sendtokodi and set values:
+1. Or create config file ~/.sendtokodi and set preferred values:
 
        #!/bin/bash
        GUI=0
@@ -49,15 +49,12 @@ That provide the following features
        HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4 if hostname is not visible
        HEIGHT="360"
 
-1. Edit `send-to-kodi.desktop` and add your credentials (optional).
+1. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
 
-1. Copy to system folders:
-
-       sudo cp send-to-kodi.sh /usr/local/bin/
-       sudo cp send-to-kodi.desktop /usr/share/applications/
-
-    Send a local or online video to Kodi. Run without URL to get a GUI.
-In the GUI, you may prepend an URL with ! to disable resolving (like -x).
+       chmod 600 send-to-kodi.desktop
+       mkdir -p ~/.local/bin ~/.local/share/applications
+       cp send-to-kodi.sh ~/.local/bin/send-to-kodi
+       cp send-to-kodi.desktop ~/.local/share/applications/
 
 1. Options:
 
