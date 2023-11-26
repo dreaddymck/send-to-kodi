@@ -1,8 +1,0 @@
-#!/bin/bash
-
-iptv_send() {
-    # kodi_stop
-    # sleep 2s
-    INPUT=$selected_channel_url
-    kodi_main "$INPUT"
-}

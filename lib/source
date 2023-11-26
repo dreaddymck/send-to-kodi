@@ -1,16 +1,10 @@
 #!/bin/bash
-source "$SEND_TO_KODI_DIR/lib/kodi/about"
-source "$SEND_TO_KODI_DIR/lib/kodi/requirements"
-source "$SEND_TO_KODI_DIR/lib/kodi/maintenance"
-source "$SEND_TO_KODI_DIR/lib/kodi/requests"
-source "$SEND_TO_KODI_DIR/lib/kodi/serve"
+source "$SEND_TO_KODI_DIR/lib/defines"
+source "$SEND_TO_KODI_DIR/lib/requirements"
+source "$SEND_TO_KODI_DIR/lib/about"
+source "$SEND_TO_KODI_DIR/lib/maintenance"
+source "$SEND_TO_KODI_DIR/lib/server"
+source "$SEND_TO_KODI_DIR/lib/kodi/kodi_requests"
 source "$SEND_TO_KODI_DIR/lib/kodi/kodi_main"
-source "$SEND_TO_KODI_DIR/lib/kodi/defines"
 source "$SEND_TO_KODI_DIR/lib/iptv/iptv_channels"
-source "$SEND_TO_KODI_DIR/lib/iptv/iptv_send"
 source "$SEND_TO_KODI_DIR/lib/iptv/iptv_main"
-
-# IPTV=iptv
-# if [[ -f "$SEND_TO_KODI_DIR/$IPTV" ]]; then
-#     source "$SEND_TO_KODI_DIR/$IPTV"
-# fi

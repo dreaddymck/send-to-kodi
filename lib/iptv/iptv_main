@@ -29,6 +29,6 @@ iptv_main() {
     check_url $selected_channel_url
     
     printf "Sending %s to Kodi\n" "$selected_channel_name"
-    iptv_send $selected_channel_url
+    kodi_main "$selected_channel_url"
     iptv_main
 }
