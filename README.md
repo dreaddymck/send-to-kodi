@@ -1,8 +1,11 @@
 # Send to Kodi DMCK
 
-Two projects combined for convenience. 
-https://github.com/allejok96/send-to-kodi
-https://github.com/shahin8r/iptv
+Two projects combined.
+
+* https://github.com/allejok96/send-to-kodi
+* https://github.com/shahin8r/iptv
+
+That provide the following features
 
 * Send compatible yt-dlp/youtube-dl streams to Kodi.
 * Send compatible local media to Kodi.
@@ -46,16 +49,14 @@ https://github.com/shahin8r/iptv
        HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4 if hostname is not visible
        HEIGHT="360"
 
-1. For a more polished experience, edit `send-to-kodi.desktop` and add your credentials.
+1. Edit `send-to-kodi.desktop` and add your credentials (optional).
 
 1. Copy to system folders:
 
        sudo cp send-to-kodi.sh /usr/local/bin/
        sudo cp send-to-kodi.desktop /usr/share/applications/
 
-1. Usage: send-to-kodi.sh [options] -r HOST:PORT [URL|FILE]
-
-Send a local or online video to Kodi. Run without URL to get a GUI.
+    Send a local or online video to Kodi. Run without URL to get a GUI.
 In the GUI, you may prepend an URL with ! to disable resolving (like -x).
 
 1. Options:
@@ -98,7 +99,7 @@ In the GUI, you may prepend an URL with ! to disable resolving (like -x).
         !^music      inverse-prefix-exact-match	    Items that do not start with music
         !.mp3$       inverse-suffix-exact-match	    Items that do not end with .mp3       
 
-1. Note: to exit the iptv interface: clear screen with bad search then select empty field
+1. Note: to gracefully exit the iptv interface, clear screen with an invalid search then select empty field.
 
 ## Zenity dialogue
 
