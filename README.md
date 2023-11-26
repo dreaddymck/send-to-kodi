@@ -1,8 +1,8 @@
 # Send to Kodi DMCK
 
-        Two projects combined for convenience. 
-        https://github.com/allejok96/send-to-kodi
-        https://github.com/shahin8r/iptv
+Two projects combined for convenience. 
+https://github.com/allejok96/send-to-kodi
+https://github.com/shahin8r/iptv
 
 * Send compatible yt-dlp/youtube-dl streams to Kodi.
 * Send compatible local media to Kodi.
