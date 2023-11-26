@@ -1,11 +1,15 @@
-# Send to Kodi 
+# Send to Kodi
+
+        Two projects combined for convenience. 
+        https://github.com/allejok96/send-to-kodi
+        https://github.com/shahin8r/iptv
 
 * Send compatible yt-dlp/youtube-dl streams to Kodi.
 * Send compatible local media to Kodi.
 * MPEG-DASH (high quality video) support.
 * Kodi add-ons may be required for proprietory media streams.
 * Zenity input interface
-* IPTV m3u interface (__Work In Progress__)
+* IPTV m3u playlist interface, send iptv to kodi (__Work In Progress__)
 
 ## Installation
 
