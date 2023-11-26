@@ -1,4 +1,4 @@
-# Send to Kodi
+# Send to Kodi DMCK
 
         Two projects combined for convenience. 
         https://github.com/allejok96/send-to-kodi
