@@ -124,13 +124,9 @@ function kodi_main() {
             fi
             echo "$FORMATS" >&2            
             grep "$HEIGHT" <<< "$FORMATS"
-            if [[ $? != 0 ]]; then
-                if((STRICT)); then
-                    unset INPUT 
-                    kodi_main
-                fi
-            else          
-                url="$($YTDLP -gf best[height=$HEIGHT] "$INPUT")"
+            if [[ $? == 0 ]]; then
+                unset FORMATS        
+                url=$($YTDLP -gf best[height="$HEIGHT"] "$INPUT")
                 if [[ $? != 0 ]]; then
                     unset INPUT 
                     kodi_main
@@ -138,9 +134,14 @@ function kodi_main() {
             fi                
         fi
 
+        if ((STRICT)); then
+            unset INPUT 
+            kodi_main
+        fi        
+
         if [[ -z $url ]]; then
             echo "Searching for lowest resolution" >&2
-            url="$($YTDLP -gf worst "$INPUT")"
+            url=$($YTDLP -gf worst "$INPUT")
             if [[ $? != 0 ]]; then
                 unset INPUT 
                 kodi_main
@@ -149,7 +150,7 @@ function kodi_main() {
 
         if [[ -z $url ]]; then
             echo "Searching for best resolution" >&2
-            best="$($YTDLP -gf b "$INPUT")"
+            best=$($YTDLP -gf b "$INPUT")
             if [[ $? != 0 ]]; then
                 unset INPUT 
                 kodi_main

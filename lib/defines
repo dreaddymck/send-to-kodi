@@ -13,7 +13,9 @@ LOGIN=""
 HOST_NAME=""
 HEIGHT=""
 CYA=""
-STRICT=0 # enforce preferred options
+
+ # enforce preferred options
+STRICT=0
 
 SEND_TO_KODI_CONF="$HOME/.sendtokodi"
 if [[ -f "$SEND_TO_KODI_CONF" ]]; then
