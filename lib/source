@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$SEND_TO_KODI_DIR/lib/defines"
+source "$SEND_TO_KODI_DIR/lib/config"
 source "$SEND_TO_KODI_DIR/lib/requirements"
 source "$SEND_TO_KODI_DIR/lib/about"
 source "$SEND_TO_KODI_DIR/lib/maintenance"

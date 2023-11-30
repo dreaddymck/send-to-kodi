@@ -12,10 +12,8 @@ REMOTE=""
 LOGIN=""
 HOST_NAME=""
 HEIGHT=""
-CYA=""
-
- # enforce preferred options
-STRICT=0
+#display available formats
+LISTFORMATS=0
 
 SEND_TO_KODI_CONF="$HOME/.sendtokodi"
 if [[ -f "$SEND_TO_KODI_CONF" ]]; then

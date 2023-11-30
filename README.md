@@ -36,7 +36,7 @@ That provide the following features
 
        ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
 
-1. Or create config file ~/.sendtokodi and set preferred values:
+1. Create config file ~/.sendtokodi to override default settings:
 
        #!/bin/bash
        GUI=0
@@ -47,7 +47,10 @@ That provide the following features
        REMOTE="192.168.1.10:8080"
        LOGIN="user:pass"
        HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4 if hostname is not visible
-       HEIGHT="360"
+       #find formats less than or equal to height
+       HEIGHT="360" 
+       #display available formats
+       LISTFORMATS=0       
 
 1. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
 
