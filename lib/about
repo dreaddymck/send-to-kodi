@@ -5,8 +5,8 @@ function show_help() {
 }
 
 function version() {
-    cd "$SEND_TO_KODI_DIR"
-    echo "master: " $(git describe --abbrev=7 --always  --long --match v* master) 
-    echo "origin/master: " $(git describe --abbrev=7 --always  --long --match v* origin/master) 
-    echo "$(git log -1)"
+    cd "$SEND_TO_KODI_DIR" || exit 1
+    echo "master: " "$(git describe --abbrev=7 --always  --long --match v* master)" 
+    echo "origin/master: " "$(git describe --abbrev=7 --always  --long --match v* origin/master)"
+    git log -1
 }
