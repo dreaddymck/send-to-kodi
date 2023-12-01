@@ -22,6 +22,11 @@ function kodi_main() {
                 unset INPUT
                 kodi_main
             fi
+            if [[ "$INPUT" =~ ^(pause)$ ]]; then
+                kodi_pause
+                unset INPUT
+                kodi_main
+            fi            
             if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
                 kodi_shutdown
                 unset INPUT
@@ -113,16 +118,15 @@ function kodi_main() {
         #    Kodi has support for these, the same way 3. is done, but I haven't implemented it
         #    in the script, because I have no sites to test on.
         # 
-
+        if ((LISTFORMATS)); then
+            $YTDLP --list-formats "$INPUT"                    
+            if [[ $? != 0 ]]; then
+                unset INPUT 
+                kodi_main
+            fi
+        fi
         if ((HEIGHT)); then
             echo "Searching for preferred resolution: ${HEIGHT}p" >&2
-            if ((LISTFORMATS)); then
-                $YTDLP --list-formats "$INPUT"                    
-                if [[ $? != 0 ]]; then
-                    unset INPUT 
-                    kodi_main
-                fi
-            fi
             url="$($YTDLP -gf "best[height<=$HEIGHT]" "$INPUT")"
             if [[ $? != 0 ]]; then 
                 unset INPUT 
@@ -131,7 +135,8 @@ function kodi_main() {
         fi        
         if [[ -z $url ]]; then
             echo "Searching for best resolution" >&2
-            best="$($YTDLP -f b "$INPUT")"
+            # best="$($YTDLP -f b "$INPUT")"
+            best="$($YTDLP -f "$INPUT")"
             if [[ $? != 0 ]]; then
                 unset INPUT 
                 kodi_main

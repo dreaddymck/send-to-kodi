@@ -18,10 +18,14 @@ while [[ $* ]]; do
         kodi_next
         exit
         ;;
+    --pause)
+        kodi_pause
+        exit
+        ;;
     --shutdown)
         kodi_shutdown
         exit
-        ;;
+        ;;        
     --reboot)
         kodi_reboot
         exit

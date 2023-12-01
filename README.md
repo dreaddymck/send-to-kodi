@@ -72,6 +72,7 @@ That provide the following features
        -n|--next              next kodi playback
        --shutdown
        --reboot
+       --pause                PlayPause toggle
        --active               display Kodi active playlist id
        --version              display git verion and last log entry
        --iptv                 load iptv interface
@@ -82,6 +83,7 @@ That provide the following features
         help                   display this help menu
         stop                   stop kodi playback
         next                   next kodi playback
+        pause                  PlayPause toggle
         shutdown
         reboot
         active                 display Kodi active playlist id
