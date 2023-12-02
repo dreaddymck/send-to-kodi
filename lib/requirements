@@ -1,6 +1,7 @@
 #!/bin/bash
 
-shopt -s nocasematch
+shopt -s ignoreboth
+shopt -s histappend
 
 type yt-dlp &>/dev/null
 if [[ $? != 0 ]]; then
