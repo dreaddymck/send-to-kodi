@@ -70,7 +70,6 @@ That provide the following features
        -g                     enable zenity gui (default disabled)
 
        -v                     display git verion and last log entry
-       
 
 1. Commands:
 
