@@ -67,16 +67,10 @@ That provide the following features
        -u USERNAME:PASSWORD   Kodi login credentials
        -x                     Do not try to resolve URL, just send it
        -y                     Use Kodi's youtube addon instead of youtube-dl
-
-       -s|--stop              stop kodi playback
-       -n|--next              next kodi playback
-       --shutdown
-       --reboot
-       --pause                PlayPause toggle
-       --active               display Kodi active playlist id
-       --version              display git verion and last log entry
-       --iptv                 load iptv interface
        -g                     enable zenity gui (default disabled)
+
+       -v                     display git verion and last log entry
+       
 
 1. Commands:
 

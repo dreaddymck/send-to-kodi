@@ -6,30 +6,6 @@ while [[ $* ]]; do
         show_help
         exit
         ;;
-    -s | --stop)
-        kodi_stop
-        exit
-        ;;
-    -n | --next)
-        kodi_next
-        exit
-        ;;
-    --pause)
-        kodi_pause
-        exit
-        ;;
-    --shutdown)
-        kodi_shutdown
-        exit
-        ;;        
-    --reboot)
-        kodi_reboot
-        exit
-        ;;
-    --iptv)
-        iptv_main
-        exit
-        ;;
     -v | --version)
         version
         exit
