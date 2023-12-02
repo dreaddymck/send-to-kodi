@@ -16,7 +16,7 @@ source "$SEND_TO_KODI_DIR/lib/start"
 
 [[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
 
-HISTFILE=~/.send_to_kodi_history
+HISTFILE=$HOME/.config/send_to_kodi/.send_to_kodi_history
 HISTCONTROL=ignoreboth
 shopt -s histappend
 

@@ -15,7 +15,9 @@ HEIGHT=""
 #display available formats
 LISTFORMATS=0
 
-SEND_TO_KODI_CONF="$HOME/.sendtokodi"
+mkdir -p $HOME/.config/send_to_kodi
+
+SEND_TO_KODI_CONF="$HOME/.config/send_to_kodi/.sendtokodi"
 if [[ -f "$SEND_TO_KODI_CONF" ]]; then
     source $SEND_TO_KODI_CONF
 fi

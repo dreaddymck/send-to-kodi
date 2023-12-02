@@ -36,7 +36,7 @@ That provide the following features
 
        ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
 
-1. Create config file ~/.sendtokodi to override default settings:
+1. Create config file $HOME/.config/send_to_kodi/.sendtokodi to override default settings:
 
        #!/bin/bash
        GUI=0
