@@ -15,12 +15,7 @@ iptv_main() {
         unset selected
         kodi_main
     fi
-     
-    # if [[ "$selected" =~ ^(kodi)$ ]]; then
-    #     unset selected
-    #     kodi_main
-    # fi  
-
+ 
     selected_channel=$(echo "$selected" | sed 's/.*\(\[CH:[0-9]\+\]\).*/\1/')
     selected_channel_line=$(cat "$channels_file" | grep -F "$selected_channel")
     selected_channel_url=$(echo "$selected_channel_line" | grep -oE 'url:(.*)' | sed 's/url://' | tr -d '\r')

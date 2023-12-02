@@ -1,18 +1,18 @@
 #!/bin/bash
 
 function kodi_main() {
-    # set -o history  
-    
+    set -o history  
+   
     unset url
 
     if [ -z $INPUT ]; then
-        set -o history
+        
         if ((GUI)); then
             INPUT="$(zenity --entry --title "Send to Kodi" --text "Paste a URL or press OK to select a file")" || exit
             [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || kodi_main
         else         
             read -r -e -d $'\n' -p 'Enter[url/path/cmd]: ' INPUT
-            history -s "$INPUT"
+            
             if [[ "$INPUT" =~ ^(exit|quit)$ ]]; then
                 unset INPUT
                 exit
@@ -67,6 +67,8 @@ function kodi_main() {
         fi
     fi
 
+    history -s "$INPUT"
+    
     trap 'cleanup' EXIT
 
     # Don't try to resolve
