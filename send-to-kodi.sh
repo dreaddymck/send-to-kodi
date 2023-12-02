@@ -14,9 +14,10 @@ source "$SEND_TO_KODI_DIR/lib/kodi/kodi_requests"
 source "$SEND_TO_KODI_DIR/lib/kodi/kodi_main"
 source "$SEND_TO_KODI_DIR/lib/start"
 
-
 [[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
 
 HISTFILE=~/.send_to_kodi_history
+HISTCONTROL=ignoreboth
+shopt -s histappend
 
 kodi_main

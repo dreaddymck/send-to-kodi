@@ -1,7 +1,5 @@
 #!/bin/bash
 
-shopt -s ignoreboth
-shopt -s histappend
 
 type yt-dlp &>/dev/null
 if [[ $? != 0 ]]; then
@@ -17,5 +15,7 @@ fi
 # if [[ $? != 0 ]]; then
 #     error "fzf required"
 # fi
+
+
 
 
