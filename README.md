@@ -38,7 +38,7 @@ That provide the following features
 
 1. Create config file $HOME/.config/send_to_kodi/.sendtokodi to override default settings:
 
-       #!/bin/bash
+       #!/usr/bin/env bash
        GUI=0
        DOWNLOAD_DIR=.
        KODI_YOUTUBE=0
@@ -50,7 +50,7 @@ That provide the following features
        #find formats less than or equal to height
        HEIGHT="360" 
        #display available formats
-       LISTFORMATS=0       
+       LISTFORMATS=0  
 
 1. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
 
@@ -83,6 +83,13 @@ That provide the following features
         version                display git verion and last log entry
         exit|quit
         iptv                   load iptv interface (work in progress)
+
+1. Custom commands implemented like the example below, in the following file: $HOME/.config/send_to_kodi/send_to_kodi_commands
+
+       if [[ "$INPUT" =~ ^(command)$ ]]; then
+           your-custom-command
+           kodi_main #back to send-to-kodi.sh prompt
+       fi
 
 1. FZF syntax:
 

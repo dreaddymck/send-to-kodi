@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SEND_TO_KODI_DIR="$(dirname "$(readlink -f "$0")")"
 # echo "$SEND_TO_KODI_DIR" >&2

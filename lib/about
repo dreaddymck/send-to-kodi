@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function show_help() {
     less "$SEND_TO_KODI_DIR/README.md" 

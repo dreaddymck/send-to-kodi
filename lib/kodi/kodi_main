@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function kodi_main() {
     set -o history  
@@ -60,7 +60,10 @@ function kodi_main() {
                 unset INPUT
                 version
                 kodi_main
-            fi            
+            fi 
+            if [[ -f "$HOME/.config/send_to_kodi/send_to_kodi_commands" ]]; then
+                source "$HOME/.config/send_to_kodi/send_to_kodi_commands"
+            fi         
             if [[ -z $INPUT ]]; then
                 kodi_main                
             fi

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Show a error dialog or message
 # args: MESSAGE

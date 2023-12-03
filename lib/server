@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Download using youtube-dl and maybe show progress bar
 # args: URL

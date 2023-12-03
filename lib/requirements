@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 
 type yt-dlp &>/dev/null
 if [[ $? != 0 ]]; then
@@ -9,12 +8,6 @@ type jq &>/dev/null
 if [[ $? != 0 ]]; then
     error "jq required"
 fi
-
-## moved to iptv_main
-# type fzf &>/dev/null
-# if [[ $? != 0 ]]; then
-#     error "fzf required"
-# fi
 
 
 
