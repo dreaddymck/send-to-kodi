@@ -1,6 +1,6 @@
 # Send to Kodi DMCK
 
-Two projects combined.
+Two github projects combined.
 
 * https://github.com/allejok96/send-to-kodi
 * https://github.com/shahin8r/iptv
@@ -21,44 +21,46 @@ Offering the following features
 
 1. Install on your Kodi box:
    * `InputStream.Adaptive` to enable MPEG-DASH support.
-   * *Youtube add-on* for better youtube support.
+   * *Kodi add-ons* for proprietory media support.
 
-1. Install on your Linux machine:
+1. Install to your Linux environment:
    * `yt-dlp`           to add support for hundreds of video sites.
    * `jq`               JSON Processing
    * `fzf`              required for iptv interface (optional) - https://github.com/junegunn/fzf
-   * `python-twisted`   to enable local file sharing and MPEG-DASH support (optional).
+   * `python-twisted`   to enable local file sharing and MPEG-DASH support (optional). Environment variables: TWISTED_PATH - Path to python-twisted webserver
    * `zenity`           Graphical interface (optional)
    * `PhantomJS`        Scriptable Headless Browser (optional)
 
-1. Environment variables: TWISTED_PATH - Path to python-twisted webserver
-
-1. Run it from the command line like so:
+1. Run it from the command line:
 
        ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
 
 1. Edit config file $HOME/.config/send_to_kodi/.sendtokodi to override default settings:
-
-       #!/usr/bin/env bash
-       GUI=0
-       DOWNLOAD_DIR=.
-       KODI_YOUTUBE=0
-       SEND_RAW=0
-       SHARE_PORT=8080
-       REMOTE=""
-       LOGIN=""
-       HOST_NAME=""
-       RESOLUTION_HEIGHT=""
-       RESOLUTION_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
-       #display available formats
-       LISTFORMATS=0 
+    ```bash
+    #!/usr/bin/env bash
+    GUI=0
+    DOWNLOAD_DIR=.
+    KODI_YOUTUBE=0
+    SEND_RAW=0
+    SHARE_PORT=8080
+    REMOTE=""
+    LOGIN=""
+    HOST_NAME=""
+    RESOLUTION_HEIGHT=""
+    RESOLUTION_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
+    #display formats available
+    LISTFORMATS=0 
+    ```
 
 1. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
 
-       chmod 600 send-to-kodi.desktop
-       mkdir -p ~/.local/bin ~/.local/share/applications
-       cp send-to-kodi.sh ~/.local/bin/send-to-kodi
-       cp send-to-kodi.desktop ~/.local/share/applications/
+    ```bash
+    chmod 600 send-to-kodi.desktop
+    mkdir -p ~/.local/bin ~/.local/share/applications
+    cp send-to-kodi.sh ~/.local/bin/send-to-kodi
+    cp send-to-kodi.desktop ~/.local/share/applications/
+    ```
+
 
 1. Options:
 
@@ -70,7 +72,7 @@ Offering the following features
        -y                     Use Kodi's youtube addon instead of youtube-dl
        -g                     enable zenity gui (default disabled)
 
-       -v                     display git verion and last log entry
+       -v                     display git version and last log entry
 
 1. Commands:
 
@@ -81,17 +83,17 @@ Offering the following features
         shutdown
         reboot
         active                 display Kodi active playlist id
-        version                display git verion and last log entry
+        version                display git version and last log entry
         exit|quit
         iptv                   load iptv interface (work in progress)
 
-1. Custom commands implemented like the example below, in the following file: $HOME/.config/send_to_kodi/send_to_kodi_commands
-
-       if [[ "$INPUT" =~ ^(command)$ ]]; then
-           your-custom-command
-           kodi_main #back to send-to-kodi.sh prompt
-       fi
-
+1. Ad custom commands to the following script: $HOME/.config/send_to_kodi/send_to_kodi_commands
+    ```bash
+    if [[ "$INPUT" =~ ^(command)$ ]]; then
+        your-custom-command
+        kodi_main #back to send-to-kodi.sh prompt
+    fi
+    ```
 1. FZF syntax:
 
         sbtrkt       fuzzy-match	                Items that match sbtrkt
