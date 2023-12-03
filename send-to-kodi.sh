@@ -25,5 +25,4 @@ source "$SEND_TO_KODI_DIR/lib/start"
 HISTFILE=$HOME/.config/send_to_kodi/.send_to_kodi_history
 HISTCONTROL=ignoreboth
 shopt -s histappend
-set -o history 
 kodi_main

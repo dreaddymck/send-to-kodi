@@ -69,6 +69,7 @@ function kodi_main() {
         fi
     fi
 
+    set -o history 
     history -s "$INPUT"
     
     trap 'cleanup' EXIT
@@ -144,14 +145,18 @@ function kodi_main() {
             fi                
         fi        
         if [[ -z $url ]]; then
-            echo "Searching for best media" >&2
+            echo "Searching for best" >&2
             best="$($YTDLP -g "$INPUT")"
             if [[ $? != 0 ]]; then
                 unset INPUT 
                 kodi_main
             fi
-            echo "Looking for compatible media..." >&2
-            url="$($YTDLP -gf b "$INPUT")"             
+            echo "Searching for compatible" >&2
+            url="$($YTDLP -gf b "$INPUT")"  
+            if [[ $? != 0 ]]; then
+                unset INPUT 
+                kodi_main
+            fi                       
         fi       
         
         dash='^[^?]*\.mpd(\?|$)'
@@ -167,7 +172,7 @@ function kodi_main() {
                 # [[ -z $url || $url =~ $dash ]] || question "Use MPEG-DASH for better quality?" && url="$video"
                 [[ -z $url || $url =~ $dash ]] || url="$video"
 
-            # Download with youtube-dl
+            # Download with yt-dlp
             elif [[ -z $url ]]; then
                 download_and_serve "$INPUT"
                 url="http://$HOST_NAME:$SHARE_PORT/media"
