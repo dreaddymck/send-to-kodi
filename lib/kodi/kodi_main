@@ -129,7 +129,13 @@ function kodi_main() {
                 kodi_main
             fi
         fi
-        if ((HEIGHT)); then
+        BYPASS=""
+        for FORMAT_BYPASS in "${FORMAT_BYPASS_LIST[@]}"; do
+            if [[ "$INPUT" =~ $FORMAT_BYPASS ]]; then
+                BYPASS=$FORMAT_BYPASS
+            fi
+        done  
+        if ((HEIGHT)) && ((!BYPASS)) ; then
             echo "Searching for preferred resolution: ${HEIGHT}p" >&2
             url="$($YTDLP -gf "best[height<=$HEIGHT]" "$INPUT")"
             if [[ $? != 0 ]]; then 
@@ -138,19 +144,20 @@ function kodi_main() {
             fi                
         fi        
         if [[ -z $url ]]; then
-            echo "Searching for best resolution" >&2
-            # best="$($YTDLP -f b "$INPUT")"
-            best="$($YTDLP -f "$INPUT")"
+            echo "Searching for best media" >&2
+            best="$($YTDLP -g "$INPUT")"
             if [[ $? != 0 ]]; then
                 unset INPUT 
                 kodi_main
-            fi             
+            fi
+            echo "Looking for compatible media..." >&2
+            url="$($YTDLP -gf b "$INPUT")"             
         fi       
         
         dash='^[^?]*\.mpd(\?|$)'
 
         # There is a better URL (but it will need some pre-processing)
-        if ((best)); then
+        if [[ "$url" != "$best" ]]; then
 
             video="$(head -n1 <<< "$best" | tail -n1)"
             audio="$(head -n2 <<< "$best" | tail -n1)"

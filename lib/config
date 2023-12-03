@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 SEND_TO_KODI_HOME="$HOME/.config/send_to_kodi"
 SEND_TO_KODI_CONF="$SEND_TO_KODI_HOME/.sendtokodi"
 
@@ -17,6 +18,7 @@ REMOTE=""
 LOGIN=""
 HOST_NAME=""
 HEIGHT=""
+FORMAT_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
 #display available formats
 LISTFORMATS=0
 EOF
