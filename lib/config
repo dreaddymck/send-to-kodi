@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
-YTDLP="$(which yt-dlp)"
+SEND_TO_KODI_CONF="$HOME/.config/send_to_kodi/.sendtokodi"
 
-# settings
+if [[ ! -f "$SEND_TO_KODI_CONF" ]]; then
+
+mkdir -p $HOME/.config/send_to_kodi
+
+cat > "$SEND_TO_KODI_CONF" << EOF
+#!/usr/bin/env bash
 GUI=0
 DOWNLOAD_DIR=.
 KODI_YOUTUBE=0
@@ -14,13 +19,11 @@ HOST_NAME=""
 HEIGHT=""
 #display available formats
 LISTFORMATS=0
+EOF
 
-mkdir -p $HOME/.config/send_to_kodi
-
-SEND_TO_KODI_CONF="$HOME/.config/send_to_kodi/.sendtokodi"
-if [[ -f "$SEND_TO_KODI_CONF" ]]; then
-    source $SEND_TO_KODI_CONF
 fi
+
+source $SEND_TO_KODI_CONF
 
 #iptv def
 config_path="$HOME/.config/iptv/"

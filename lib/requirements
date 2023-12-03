@@ -9,6 +9,8 @@ if [[ $? != 0 ]]; then
     error "jq required"
 fi
 
+YTDLP="$(which yt-dlp)"
+
 
 
 
