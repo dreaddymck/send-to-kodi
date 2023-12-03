@@ -130,14 +130,14 @@ function kodi_main() {
             fi
         fi
         BYPASS=""
-        for FORMAT_BYPASS in "${FORMAT_BYPASS_LIST[@]}"; do
-            if [[ "$INPUT" =~ $FORMAT_BYPASS ]]; then
-                BYPASS=$FORMAT_BYPASS
+        for RESOLUTION_BYPASS in "${RESOLUTION_BYPASS_LIST[@]}"; do
+            if [[ "$INPUT" =~ $RESOLUTION_BYPASS ]]; then
+                BYPASS=$RESOLUTION_BYPASS
             fi
         done  
-        if ((HEIGHT)) && ((!BYPASS)) ; then
-            echo "Searching for preferred resolution: ${HEIGHT}p" >&2
-            url="$($YTDLP -gf "best[height<=$HEIGHT]" "$INPUT")"
+        if ((RESOLUTION_HEIGHT)) && ((!BYPASS)) ; then
+            echo "Searching for preferred resolution: ${RESOLUTION_HEIGHT}p" >&2
+            url="$($YTDLP -gf "best[height<=$RESOLUTION_HEIGHT]" "$INPUT")"
             if [[ $? != 0 ]]; then 
                 unset INPUT 
                 kodi_main       

@@ -45,13 +45,13 @@ Offering the following features
        KODI_YOUTUBE=0
        SEND_RAW=0
        SHARE_PORT=8080
-       REMOTE="192.168.1.10:8080"
-       LOGIN="user:pass"
-       HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4 if hostname is not visible
-       #find formats less than or equal to height
-       HEIGHT="360" 
+       REMOTE=""
+       LOGIN=""
+       HOST_NAME=""
+       RESOLUTION_HEIGHT=""
+       RESOLUTION_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
        #display available formats
-       LISTFORMATS=0  
+       LISTFORMATS=0 
 
 1. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
 

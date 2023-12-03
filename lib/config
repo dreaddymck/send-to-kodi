@@ -17,8 +17,8 @@ SHARE_PORT=8080
 REMOTE=""
 LOGIN=""
 HOST_NAME=""
-HEIGHT=""
-FORMAT_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
+RESOLUTION_HEIGHT=""
+RESOLUTION_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
 #display available formats
 LISTFORMATS=0
 EOF
