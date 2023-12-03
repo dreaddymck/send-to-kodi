@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-function kodi_main() {
-    set -o history  
+function kodi_main() {     
    
     unset url
 
