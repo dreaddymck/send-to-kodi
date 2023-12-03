@@ -5,6 +5,7 @@
 #TODO: Debug application not working with Android Termux
 #TODO: Remove Zenity support
 #TODO: Create web application support
+#TODO: option in application to change IPTV playlist
 
 SEND_TO_KODI_DIR="$(dirname "$(readlink -f "$0")")"
 # echo "$SEND_TO_KODI_DIR" >&2
