@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+#TODO: create editable collection of send raw domains and/or command flag for soundcloud like links.
+#TODO: Debug MPEG-DASH support
+#TODO: Debug application not working with Android Termux
+#TODO: Remove Zenity support
+#TODO: Create web application support
+
 SEND_TO_KODI_DIR="$(dirname "$(readlink -f "$0")")"
 # echo "$SEND_TO_KODI_DIR" >&2
 
