@@ -4,6 +4,8 @@ function kodi_main() {
    
     unset url
 
+    set -o history 
+
     if [ -z $INPUT ]; then
         
         if ((GUI)); then
@@ -69,7 +71,7 @@ function kodi_main() {
         fi
     fi
 
-    set -o history 
+    
     history -s "$INPUT"
     
     trap 'cleanup' EXIT
