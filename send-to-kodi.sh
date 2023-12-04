@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-#TODO: create editable collection of send raw domains and/or command flag for soundcloud like links.
 #TODO: Debug application not working with Android Termux
 #TODO: Remove Zenity support
 #TODO: Create web application support
