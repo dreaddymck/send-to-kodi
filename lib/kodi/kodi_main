@@ -130,10 +130,10 @@ function kodi_main() {
                 kodi_main
             fi
         fi
-        BYPASS=""
+        BYPASS=0
         for RESOLUTION_BYPASS in "${RESOLUTION_BYPASS_LIST[@]}"; do
             if [[ "$INPUT" =~ $RESOLUTION_BYPASS ]]; then
-                BYPASS=$RESOLUTION_BYPASS
+                BYPASS=1
             fi
         done  
         if ((RESOLUTION_HEIGHT)) && ((!BYPASS)) ; then
