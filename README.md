@@ -32,35 +32,34 @@ Offering the following features
    * `PhantomJS`        Scriptable Headless Browser (optional)
 
 1. Run it from the command line:
+    ```bash
+    ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
+    ```
 
-       ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
-
-1. Edit config file $HOME/.config/send_to_kodi/.sendtokodi to override default settings:
+1. Edit config file $HOME/.config/send_to_kodi/.sendtokodi to customize default settings:
     ```bash
     #!/usr/bin/env bash
     GUI=0
     DOWNLOAD_DIR=.
     KODI_YOUTUBE=0
     SEND_RAW=0
+    REMOTE="kodibox:8080"
+    LOGIN="user:pass"
+    HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4
     SHARE_PORT=8080
-    REMOTE=""
-    LOGIN=""
-    HOST_NAME=""
     RESOLUTION_HEIGHT=""
     RESOLUTION_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
-    #display formats available
-    LISTFORMATS=0 
+    #display available formats
+    LISTFORMATS=0
     ```
 
 1. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
-
     ```bash
     chmod 600 send-to-kodi.desktop
     mkdir -p ~/.local/bin ~/.local/share/applications
     cp send-to-kodi.sh ~/.local/bin/send-to-kodi
     cp send-to-kodi.desktop ~/.local/share/applications/
     ```
-
 
 1. Options:
 
@@ -94,6 +93,7 @@ Offering the following features
         kodi_main #back to send-to-kodi.sh prompt
     fi
     ```
+
 1. FZF syntax:
 
         sbtrkt       fuzzy-match	                Items that match sbtrkt
