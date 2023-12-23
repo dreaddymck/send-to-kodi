@@ -52,7 +52,7 @@ function check_url() {
     local input_string=$1
 
     # Use regex pattern to check if the string matches the URL format
-    local url_pattern="^(http|https)://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}(/\S*)?$"
+    local url_pattern='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
 
     if [[ ! $input_string =~ $url_pattern ]]; then
         unset INPUT
