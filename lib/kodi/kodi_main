@@ -70,11 +70,9 @@ function kodi_main() {
             fi
         fi
     fi
-
     
-    history -s "$INPUT"
-    
-    trap 'cleanup' EXIT
+    # trap 'cleanup' EXIT
+    trap cleanup INT TERM
 
     # Don't try to resolve
     if ((SEND_RAW)); then
@@ -82,7 +80,7 @@ function kodi_main() {
     elif [[ $INPUT =~ ^! ]]; then
         url="${INPUT:1}"
     # Local file
-    elif [[ -f $INPUT ]]; then
+    elif [[ -f "$INPUT" ]]; then
         serve "$INPUT"
         url="http://$HOST_NAME:$SHARE_PORT/media"
     # Other protocols
@@ -207,6 +205,8 @@ function kodi_main() {
 {"jsonrpc":"2.0","id":0,"method":"Player.Open","params":{"item":{"playlistid":0,"position":0}}}]'
     fi
 
+    history -s "$INPUT"
+    
     unset INPUT
 
     # Maybe wait for server (trap will kill it on EXIT)

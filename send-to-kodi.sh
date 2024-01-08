@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-#TODO: Debug application not working with Android Termux
 #TODO: Remove Zenity support
 #TODO: Create web application support
 #TODO: option in application to change IPTV playlist

@@ -32,4 +32,6 @@ function cleanup() {
         question "Delete $TMP_FILE?" && rm "$DOWNLOAD_DIR/$TMP_FILE"
     fi
     [[ $TWISTED_PID ]] && kill "$TWISTED_PID"
+    unset INPUT
+    kodi_main
 }
