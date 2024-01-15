@@ -145,11 +145,13 @@ function kodi_main() {
             fi                
         fi        
         if [[ -z $url ]]; then
-            echo "Searching for best" >&2
-            best="$($YTDLP -g "$INPUT")"
-            if [[ $? != 0 ]]; then
-                unset INPUT 
-                kodi_main
+            if ((!BYPASS)) ; then
+                echo "Searching for best" >&2
+                best="$($YTDLP -g "$INPUT")"
+                if [[ $? != 0 ]]; then
+                    unset INPUT 
+                    kodi_main
+                fi
             fi
             echo "Searching for compatible" >&2
             url="$($YTDLP -gf b "$INPUT")"  
