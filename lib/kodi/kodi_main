@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
-function kodi_main() {     
-   
+function kodi_main() {
+
     unset url
 
-    set -o history 
+    set -o history
 
     if [ -z $INPUT ]; then
-        
+
         if ((GUI)); then
             INPUT="$(zenity --entry --title "Send to Kodi" --text "Paste a URL or press OK to select a file")" || exit
             [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || kodi_main
-        else         
+        else
             read -r -e -d $'\n' -p 'Enter[url/path/cmd]: ' INPUT
-            
+
             if [[ "$INPUT" =~ ^(exit|quit)$ ]]; then
                 unset INPUT
                 exit
@@ -27,7 +27,7 @@ function kodi_main() {
                 kodi_pause
                 unset INPUT
                 kodi_main
-            fi            
+            fi
             if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
                 kodi_shutdown
                 unset INPUT
@@ -37,7 +37,7 @@ function kodi_main() {
                 kodi_reboot
                 unset INPUT
                 kodi_main
-            fi                        
+            fi
             if [[ "$INPUT" =~ ^(next)$ ]]; then
                 kodi_next
                 unset INPUT
@@ -61,16 +61,16 @@ function kodi_main() {
                 unset INPUT
                 version
                 kodi_main
-            fi 
+            fi
             if [[ -f "$HOME/.config/send_to_kodi/send_to_kodi_commands" ]]; then
                 source "$HOME/.config/send_to_kodi/send_to_kodi_commands"
-            fi         
+            fi
             if [[ -z $INPUT ]]; then
-                kodi_main                
+                kodi_main
             fi
         fi
     fi
-    
+
     # trap 'cleanup' EXIT
     trap cleanup INT TERM
 
@@ -122,45 +122,52 @@ function kodi_main() {
         # 5. ISM or HLS (?)
         #    Kodi has support for these, the same way 3. is done, but I haven't implemented it
         #    in the script, because I have no sites to test on.
-        # 
-        if ((LISTFORMATS)); then
-            $YTDLP --list-formats "$INPUT"                    
-            if [[ $? != 0 ]]; then
-                unset INPUT 
-                kodi_main
-            fi
-        fi
+        #
+
         BYPASS=0
-        for RESOLUTION_BYPASS in "${RESOLUTION_BYPASS_LIST[@]}"; do
-            if [[ "$INPUT" =~ $RESOLUTION_BYPASS ]]; then
+
+        for BYPASS_LIST_ITEM in "${BYPASS_LIST[@]}"; do
+            if [[ "$INPUT" =~ $BYPASS_LIST_ITEM ]]; then
                 BYPASS=1
+                break
             fi
-        done  
-        if ((RESOLUTION_HEIGHT)) && ((!BYPASS)) ; then
-            echo "Searching for preferred resolution: ${RESOLUTION_HEIGHT}p" >&2
-            url="$($YTDLP -gf "best[height<=$RESOLUTION_HEIGHT]" "$INPUT")"
-            if [[ $? != 0 ]]; then 
-                unset INPUT 
-                kodi_main       
-            fi                
-        fi        
-        if [[ -z $url ]]; then
-            if ((!BYPASS)) ; then
-                echo "Searching for best" >&2
-                best="$($YTDLP -g "$INPUT")"
+        done
+        if ((!BYPASS)) ; then
+            #list media resolutions if avaialable
+            if ((LISTFORMATS)); then
+                $YTDLP --list-formats "$INPUT"
                 if [[ $? != 0 ]]; then
-                    unset INPUT 
+                    # unset INPUT
+                    # kodi_main
+                    BYPASS=1
+                fi
+            fi
+            if ((RESOLUTION_HEIGHT)) && ((!BYPASS)) ; then
+                echo "Searching for preferred resolution: ${RESOLUTION_HEIGHT}p" >&2
+                url="$($YTDLP -gf "best[height<=$RESOLUTION_HEIGHT]" "$INPUT")"
+                if [[ $? != 0 ]]; then
+                    unset INPUT
                     kodi_main
                 fi
             fi
+        fi
+        if [[ -z $url ]]; then
+            # if ((!BYPASS)) ; then
+            #     echo "Searching for best" >&2
+            #     best="$($YTDLP -g "$INPUT")"
+            #     if [[ $? != 0 ]]; then
+            #         unset INPUT
+            #         kodi_main
+            #     fi
+            # fi
             echo "Searching for compatible" >&2
-            url="$($YTDLP -gf b "$INPUT")"  
+            url="$($YTDLP -gf b "$INPUT")"
             if [[ $? != 0 ]]; then
-                unset INPUT 
+                unset INPUT
                 kodi_main
-            fi                       
-        fi       
-        
+            fi
+        fi
+
         dash='^[^?]*\.mpd(\?|$)'
 
         # There is a better URL (but it will need some pre-processing)
@@ -208,7 +215,7 @@ function kodi_main() {
     fi
 
     history -s "$INPUT"
-    
+
     unset INPUT
 
     # Maybe wait for server (trap will kill it on EXIT)

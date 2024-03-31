@@ -48,7 +48,7 @@ Offering the following features
     HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4
     SHARE_PORT=8080
     RESOLUTION_HEIGHT=""
-    RESOLUTION_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
+    BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
     #display available formats
     LISTFORMATS=0
     ```
@@ -102,7 +102,7 @@ Offering the following features
         .mp3$        suffix-exact-match	            Items that end with .mp3
         !fire	     inverse-exact-match	        Items that do not include fire
         !^music      inverse-prefix-exact-match	    Items that do not start with music
-        !.mp3$       inverse-suffix-exact-match	    Items that do not end with .mp3       
+        !.mp3$       inverse-suffix-exact-match	    Items that do not end with .mp3
 
 1. Note: to gracefully exit the iptv interface, clear screen with an invalid search then select empty field.
 

@@ -18,7 +18,7 @@ LOGIN="user:pass"
 HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4
 SHARE_PORT=8080
 RESOLUTION_HEIGHT=""
-RESOLUTION_BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
+BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
 #display available formats
 LISTFORMATS=0
 EOF
