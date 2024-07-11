@@ -19,8 +19,8 @@ source "$SEND_TO_KODI_DIR/lib/kodi/kodi_main"
 source "$SEND_TO_KODI_DIR/lib/start"
 
 [[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
-
 echo "$KODI_LOGO_ASCII"
+date
 echo "Kodi: $REMOTE"
 echo "Local: $HOST_NAME"
 
