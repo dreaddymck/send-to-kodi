@@ -7,6 +7,9 @@ if [[ ! -f "$SEND_TO_KODI_CONF" ]]; then
 
 mkdir -p "$SEND_TO_KODI_HOME"
 
+# yt-dlp -f 'bestvideo[height<=1440][ext=mp4]' --user-agent 'WEB' --get-url https://youtu.be/m9EClKA1VeQ #AV1 mp4 video (unusable encoding; 1440p)
+# YTDLP_CUSTOM_OPTIONS="best[height<=$RESOLUTION_HEIGHT]"
+
 cat > "$SEND_TO_KODI_CONF" << EOF
 #!/usr/bin/env bash
 GUI=0
@@ -14,11 +17,18 @@ DOWNLOAD_DIR=.
 KODI_YOUTUBE=0
 SEND_RAW=0
 REMOTE="kodibox:8080"
-LOGIN="user:pass"
-HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4
+LOGIN="username:password"
+HOST_NAME="$(hostname -I | awk '{print $1}' || hostname -i )" #ipv4 is hostname not visible
 SHARE_PORT=8080
-RESOLUTION_HEIGHT=""
-BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
+RESOLUTION_HEIGHT="360"
+USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
+YTDLP_CUSTOM_OPTIONS=""
+BYPASS_LIST=(
+	"soundcloud.com"
+	"yp.shoutcast.com"
+	"www.youtube.com/shorts/"
+	"odysee.com/"
+)
 #display available formats
 LISTFORMATS=0
 EOF
@@ -33,3 +43,25 @@ channels_file="$config_path/channels"
 m3u_url_file="$config_path/m3u_url"
 tmp_playlist="/tmp/iptvplaylist"
 mkdir -p "$config_path"
+
+KODI_LOGO_ASCII=$(cat << EOF
+                      :--.
+                    .-====-.
+                   :+=====+-
+                   :=====-.   ..
+              .=:  :===-.   .-==-.
+            .===:  :+-.   .=======-
+             :=+:  .:      :======:
+               -.     .--.   :==:
+                    .-====-.
+                   .=+====+=.
+                     :====:
+                       ::
+
+            .   ..  .:::   :..:.  .
+            =..--..=:..:=..*...-= =
+            +==+  =:    -+.+    *.=
+            =: .=:.=:..:=..*...-= =
+            .    :  .::.   ::::.  .
+EOF
+)

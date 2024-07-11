@@ -20,6 +20,10 @@ source "$SEND_TO_KODI_DIR/lib/start"
 
 [[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
 
+echo "$KODI_LOGO_ASCII"
+echo "Kodi: $REMOTE"
+echo "Local: $HOST_NAME"
+
 HISTFILE=$HOME/.config/send_to_kodi/.send_to_kodi_history
 HISTCONTROL=ignoreboth
 shopt -s histappend
