@@ -43,6 +43,17 @@ function kodi_main() {
                 unset INPUT
                 kodi_main
             fi
+            if [[ "$INPUT" =~ ^(previous|prev)$ ]]; then
+                kodi_previous
+                unset INPUT
+                kodi_main
+            fi
+            if [[ "$INPUT" =~ ^(volume|vol)(.[0-9]*)$ ]]; then
+                VOLUME="${INPUT//[!0-9]/}"
+                kodi_volume "$VOLUME"
+                unset INPUT
+                kodi_main
+            fi
             if [[ "$INPUT" =~ ^(iptv)$ ]]; then
                 unset INPUT
                 iptv_main
@@ -62,8 +73,8 @@ function kodi_main() {
                 version
                 kodi_main
             fi
-            if [[ -f "$HOME/.config/send_to_kodi/send_to_kodi_commands" ]]; then
-                source "$HOME/.config/send_to_kodi/send_to_kodi_commands"
+            if [[ -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
+                source "$SEND_TO_KODI_CUSTOM_COMMANDS"
             fi
             if [[ -z $INPUT ]]; then
                 kodi_main
@@ -141,10 +152,10 @@ function kodi_main() {
                     BYPASS=1
                 fi
             fi
-            if ((YTDLP_CUSTOM_OPTIONS)) && ((!BYPASS));
+            if ((YTDLP_CUSTOM_COMMAND)) && ((!BYPASS));
             then
                 echo "Searching custom option" >&2
-                url="$($YTDLP_CUSTOM_OPTIONS "$INPUT")"
+                url="$($YTDLP_CUSTOM_COMMAND "$INPUT")"
                 if [[ $? != 0 ]]; then
                     unset INPUT
                     kodi_main
@@ -153,7 +164,7 @@ function kodi_main() {
             fi
             if ((RESOLUTION_HEIGHT)) && ((!BYPASS));
             then
-                echo "Searching Resolution: ${RESOLUTION_HEIGHT}p" >&2
+                echo "Searching resolution: ${RESOLUTION_HEIGHT}p" >&2
                 if ! url="$($YTDLP -gf "best[height<=$RESOLUTION_HEIGHT]" --user-agent "'$USER_AGENT'" "$INPUT")"
                 then
                     unset INPUT

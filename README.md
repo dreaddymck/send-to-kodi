@@ -62,6 +62,7 @@ Offering the following features
    ```
 7. Options:
 
+   ```text
    -d DIRECTORY           Temporary download directory for high quality streaming
    -l PORT                Local port number used for file sharing (default 8080)
    -r HOST:PORT           Kodi remote address
@@ -71,11 +72,15 @@ Offering the following features
    -g                     enable zenity gui (default disabled)
 
    -v                     display git version and last log entry
+   ```
 8. Commands:
 
+   ```text
    help                   display this help menu
    stop                   stop kodi playback
    next                   next kodi playback
+   previous|prev          previous kodi playback
+   volume|vol 100         set volume 100%
    pause                  PlayPause toggle
    shutdown
    reboot
@@ -83,6 +88,7 @@ Offering the following features
    version                display git version and last log entry
    exit|quit
    iptv                   load iptv interface (work in progress)
+   ```
 9. Ad custom commands to the following script: $HOME/.config/send_to_kodi/send_to_kodi_commands
 
    ```bash
@@ -91,8 +97,8 @@ Offering the following features
        kodi_main #back to send-to-kodi.sh prompt
    fi
    ```
-10. FZF syntax:
-
+10. IPTV FZF search syntax:
+    ```text
     sbtrkt       fuzzy-match	                Items that match sbtrkt
     'wild        exact-match (quoted)	        Items that include wild
     ^music       prefix-exact-match	            Items that start with music
@@ -100,6 +106,8 @@ Offering the following features
     !fire	     inverse-exact-match	        Items that do not include fire
     !^music      inverse-prefix-exact-match	    Items that do not start with music
     !.mp3$       inverse-suffix-exact-match	    Items that do not end with .mp3
+    ```
+
 11. Note: Gracefully exit the iptv interface with `ctrl+c` or use an an invalid search then select the empty field.
 
 ## Zenity dialogue

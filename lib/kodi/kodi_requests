@@ -15,6 +15,13 @@ function kodi_next() {
         kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"next" }, "id":0}'
     fi
 }
+function kodi_previous() {
+    kodi_get_active
+    if [[ ! -z $active_player ]]; then
+        echo "Request previous:" >&2
+        kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"previous" }, "id":0}'
+    fi
+}
 function kodi_pause() {
     kodi_get_active
     if [[ ! -z $active_player ]]; then
@@ -33,15 +40,19 @@ function kodi_get_active() {
     fi
     # echo "Player id: $active_player"
 }
+function kodi_volume(){
+    echo "Request volume: $1%" >&2
+    kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$1"'}}'
+}
 function kodi_shutdown() {
-    echo "Request system shutdown:" >&2
+    echo "Request shutdown:" >&2
     kodi_request '{"jsonrpc": "2.0", "method": "System.Shutdown"}'
 }
 function kodi_reboot() {
-    echo "Request system reboot:" >&2
+    echo "Request reboot:" >&2
     kodi_request '{"jsonrpc": "2.0", "method": "System.Reboot"}'
 }
-function kodi_request(){    
+function kodi_request(){
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1"  "http://$REMOTE/jsonrpc" 2>/dev/null)"
     echo "$1" >&2
     echo "$response" >&2

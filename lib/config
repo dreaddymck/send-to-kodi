@@ -2,14 +2,13 @@
 
 SEND_TO_KODI_HOME="$HOME/.config/send_to_kodi"
 SEND_TO_KODI_CONF="$SEND_TO_KODI_HOME/.sendtokodi"
+SEND_TO_KODI_CUSTOM_COMMANDS="$HOME/.config/send_to_kodi/send_to_kodi_commands"
 
 if [[ ! -f "$SEND_TO_KODI_CONF" ]]; then
-
 mkdir -p "$SEND_TO_KODI_HOME"
-
 # yt-dlp -f 'bestvideo[height<=1440][ext=mp4]' --user-agent 'WEB' --get-url https://youtu.be/m9EClKA1VeQ #AV1 mp4 video (unusable encoding; 1440p)
-# YTDLP_CUSTOM_OPTIONS="best[height<=$RESOLUTION_HEIGHT]"
-
+# YTDLP_CUSTOM_COMMAND="best[height<=$RESOLUTION_HEIGHT]"
+#HOST_NAME="$(hostname -I | awk '{print $1}' || hostname -i )" #ipv4 is hostname not visible
 cat > "$SEND_TO_KODI_CONF" << EOF
 #!/usr/bin/env bash
 GUI=0
@@ -18,11 +17,11 @@ KODI_YOUTUBE=0
 SEND_RAW=0
 REMOTE="kodibox:8080"
 LOGIN="username:password"
-HOST_NAME="$(hostname -I | awk '{print $1}' || hostname -i )" #ipv4 is hostname not visible
+HOST_NAME="$(hostname -i )"
 SHARE_PORT=8080
 RESOLUTION_HEIGHT="360"
 USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
-YTDLP_CUSTOM_OPTIONS=""
+YTDLP_CUSTOM_COMMAND=""
 BYPASS_LIST=(
 	"soundcloud.com"
 	"yp.shoutcast.com"
@@ -36,6 +35,21 @@ EOF
 fi
 
 source "$SEND_TO_KODI_CONF"
+
+# custom commands can be defined in this file
+if [[ ! -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]];
+then
+  mkdir -p "$SEND_TO_KODI_CUSTOM_COMMANDS"
+  cat > "$SEND_TO_KODI_CUSTOM_COMMANDS" << EOF
+#!/usr/bin/env bash
+            # if [[ '"$INPUT"' =~ ^(respring)$ ]]; then
+            #     unset INPUT
+            #     ssh ipad respring
+            #     kodi_main
+            # fi
+EOF
+
+fi
 
 #iptv def
 config_path="$HOME/.config/iptv/"
