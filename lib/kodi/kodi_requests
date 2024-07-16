@@ -41,8 +41,12 @@ function kodi_get_active() {
     # echo "Player id: $active_player"
 }
 function kodi_volume(){
-    echo "Request volume: $1%" >&2
-    kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$1"'}}'
+
+    if [[ $1 ]] && [[ $1 -ge 0 ]] && [[ $1 -le 100 ]];
+    then
+        echo "Request volume: $1%" >&2
+        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$1"'}}'
+    fi
 }
 function kodi_shutdown() {
     echo "Request shutdown:" >&2

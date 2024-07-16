@@ -63,7 +63,7 @@ function kodi_main() {
                 kodi_get_active
                 kodi_main
             fi
-            if [[ "$INPUT" =~ ^(help)$ ]]; then
+            if [[ "$INPUT" =~ ^(help|\?)$ ]]; then
                 unset INPUT
                 show_help
                 kodi_main
