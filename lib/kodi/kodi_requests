@@ -66,10 +66,11 @@ function check_url() {
     # Get the input string
     local input_string=$1
 
-    # Use regex pattern to check if the string matches the URL format
-    local url_pattern='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
+    # Use regex pattern to check if the string matches the supported URL protocol and format
+    local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
 
     if [[ ! $input_string =~ $url_pattern ]]; then
+        echo "Unsupported url: $input_string"
         unset INPUT
         kodi_main
     fi
