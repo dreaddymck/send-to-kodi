@@ -104,7 +104,7 @@ function kodi_main() {
     elif ((KODI_YOUTUBE)) && [[ $INPUT =~ ^https?://(www\.)?youtu(\.be/|be\.com/watch\?v=) ]]; then
         id="$(sed -E 's%.*(youtu\.be/|[&?]v=)([a-zA-Z0-9_-]+).*%\2%' <<<"$INPUT")"
         url="plugin://plugin.video.youtube/?action=play_video&videoid=$id"
-    # youtube-dl
+    # youtube-dl / yt-dlp
     else
         # youtube-dl -g may output different kinds of URL's:
         #
@@ -135,35 +135,37 @@ function kodi_main() {
         #    in the script, because I have no sites to test on.
         #
 
-        BYPASS=0
-        for BYPASS_LIST_ITEM in "${BYPASS_LIST[@]}"; do
-            if [[ "$INPUT" =~ $BYPASS_LIST_ITEM ]]; then
-                BYPASS=1
-                break
-            fi
-        done
-        if ((!BYPASS)) ; then
-            #list media resolutions if avaialable
-            if ((LISTFORMATS)); then
-                $YTDLP --list-formats --user-agent "'$USER_AGENT'"  "$INPUT"
-                if [[ $? != 0 ]]; then
-                    # unset INPUT
-                    # kodi_main
-                    BYPASS=1
+        #list media resolutions if avaialable
+        if ((LISTFORMATS)); then
+            $YTDLP --list-formats --user-agent "'$USER_AGENT'"  "$INPUT"
+        fi
+
+        if jq -e . >/dev/null 2>&1 <<<"$RESOLUTION_JSON"; then
+            while read -r json_string;
+            do
+                # Remove escape characters
+                clean_json_string=$(echo "$json_string" | jq -r '.')
+                res=$(echo "$clean_json_string" | jq -r '.res')
+
+                while read -r url_item; do
+
+                    if [[ "$INPUT" =~ $url_item ]]; then
+                        echo "Searching resolution: $res" >&2
+                        if url="$($YTDLP -gf "best[height<=$res]" --user-agent "'$USER_AGENT'" "$INPUT")"; then
+                            break
+                        fi
+                    fi
+
+                done <<< "$(echo "$clean_json_string" | jq -r '.value[]')"
+
+                if [[ -n $url ]]; then
+                    break
                 fi
-            fi
-            if ((YTDLP_CUSTOM_COMMAND)) && ((!BYPASS));
-            then
-                echo "Searching custom option" >&2
-                url="$($YTDLP_CUSTOM_COMMAND "$INPUT")"
-                if [[ $? != 0 ]]; then
-                    unset INPUT
-                    kodi_main
-                fi
-                BYPASS=1
-            fi
-            if ((RESOLUTION_HEIGHT)) && ((!BYPASS));
-            then
+
+            done <<< "$(echo "$RESOLUTION_JSON" | jq -c '.[]' )"
+        fi
+        if [[ -z $url ]]; then
+            if ((RESOLUTION_HEIGHT)); then
                 echo "Searching resolution: ${RESOLUTION_HEIGHT}p" >&2
                 if ! url="$($YTDLP -gf "best[height<=$RESOLUTION_HEIGHT]" --user-agent "'$USER_AGENT'" "$INPUT")"
                 then
@@ -183,7 +185,13 @@ function kodi_main() {
 
         dash='^[^?]*\.mpd(\?|$)'
 
+        # echo "Looking for best video..." >&2
+        # best="$(ytdl -g "$INPUT")" || error "No videos found or site not supported by youtube-dl"
+        # echo "Looking for compatible video..." >&2
+        # url="$(ytdl -gf best "$INPUT")"
+
         # There is a better URL (but it will need some pre-processing)
+        # TODO assign $best
         if [[ "$url" != "$best" ]]; then
 
             video="$(head -n1 <<< "$best" | tail -n1)"

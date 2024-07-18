@@ -44,11 +44,14 @@ Offering the following features
    KODI_YOUTUBE=0
    SEND_RAW=0
    REMOTE="kodibox:8080"
-   LOGIN="user:pass"
-   HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4
+   LOGIN="username:password"
+   HOST_NAME="$(hostname -i )"
    SHARE_PORT=8080
-   RESOLUTION_HEIGHT=""
-   BYPASS_LIST=("soundcloud.com" "yp.shoutcast.com")
+   USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
+   # RESOLUTION_HEIGHT="360"
+   RESOLUTION_JSON='[
+      {"res":"360", "value" : ["twitch.tv","youtube.com"]}
+   ]'
    #display available formats
    LISTFORMATS=0
    ```

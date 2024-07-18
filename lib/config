@@ -5,30 +5,23 @@ SEND_TO_KODI_CONF="$SEND_TO_KODI_HOME/.sendtokodi"
 SEND_TO_KODI_CUSTOM_COMMANDS="$HOME/.config/send_to_kodi/send_to_kodi_commands"
 
 if [[ ! -f "$SEND_TO_KODI_CONF" ]]; then
-mkdir -p "$SEND_TO_KODI_HOME"
-# yt-dlp -f 'bestvideo[height<=1440][ext=mp4]' --user-agent 'WEB' --get-url https://youtu.be/m9EClKA1VeQ #AV1 mp4 video (unusable encoding; 1440p)
-# YTDLP_CUSTOM_COMMAND="best[height<=$RESOLUTION_HEIGHT]"
-#HOST_NAME="$(hostname -I | awk '{print $1}' || hostname -i )" #ipv4 is hostname not visible
-cat > "$SEND_TO_KODI_CONF" << EOF
+  mkdir -p "$SEND_TO_KODI_HOME"
+  #HOST_NAME="$(hostname -I | awk '{print $1}' || hostname -i )" #ipv4 is hostname not visible
+  cat >"$SEND_TO_KODI_CONF" <<EOF
 #!/usr/bin/env bash
 GUI=0
-DOWNLOAD_DIR=.
+DOWNLOAD_DIR=~/Download/
 KODI_YOUTUBE=0
 SEND_RAW=0
+SHARE_PORT=8080
 REMOTE="kodibox:8080"
 LOGIN="username:password"
-HOST_NAME="$(hostname -i )"
-SHARE_PORT=8080
-RESOLUTION_HEIGHT="360"
+HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4 is hostname not visible | hostname -i
 USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
-YTDLP_CUSTOM_COMMAND=""
-BYPASS_LIST=(
-	"soundcloud.com"
-	"yp.shoutcast.com"
-	"www.youtube.com/shorts/"
-	"odysee.com/"
-)
-#display available formats
+#RESOLUTION_HEIGHT="360"
+RESOLUTION_JSON='[
+    {"res":"360", "value":["twitch.tv","youtube.com"]}
+]'
 LISTFORMATS=0
 EOF
 
@@ -37,10 +30,9 @@ fi
 source "$SEND_TO_KODI_CONF"
 
 # custom commands can be defined in this file
-if [[ ! -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]];
-then
+if [[ ! -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
   mkdir -p "$SEND_TO_KODI_CUSTOM_COMMANDS"
-  cat > "$SEND_TO_KODI_CUSTOM_COMMANDS" << EOF
+  cat >"$SEND_TO_KODI_CUSTOM_COMMANDS" <<EOF
 #!/usr/bin/env bash
             # if [[ '"$INPUT"' =~ ^(respring)$ ]]; then
             #     unset INPUT
@@ -57,25 +49,3 @@ channels_file="$config_path/channels"
 m3u_url_file="$config_path/m3u_url"
 tmp_playlist="/tmp/iptvplaylist"
 mkdir -p "$config_path"
-
-KODI_LOGO_ASCII=$(cat << EOF
-                      :--.
-                    .-====-.
-                   :+=====+-
-                   :=====-.   ..
-              .=:  :===-.   .-==-.
-            .===:  :+-.   .=======-
-             :=+:  .:      :======:
-               -.     .--.   :==:
-                    .-====-.
-                   .=+====+=.
-                     :====:
-                       ::
-                    SEND TO
-            .   ..  .:::   :..:.  .
-            =..--..=:..:=..*...-= =
-            +==+  =:    -+.+    *.=
-            =: .=:.=:..:=..*...-= =
-            .    :  .::.   ::::.  .
-EOF
-)
