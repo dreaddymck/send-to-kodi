@@ -48,7 +48,6 @@ Offering the following features
    HOST_NAME="$(hostname -i )"
    SHARE_PORT=8080
    USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
-   # RESOLUTION_HEIGHT="360"
    RESOLUTION_JSON='[
       {"res":"360", "value" : ["twitch.tv","youtube.com"]}
    ]'

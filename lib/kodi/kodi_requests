@@ -58,8 +58,10 @@ function kodi_reboot() {
 }
 function kodi_request(){
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1"  "http://$REMOTE/jsonrpc" 2>/dev/null)"
-    echo "$1" >&2
-    echo "$response" >&2
+    if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+        echo "$1" >&2
+        echo "$response" >&2
+    fi
     ! [[ $response =~ '"error":' ]] || error "$response"
 }
 function check_url() {

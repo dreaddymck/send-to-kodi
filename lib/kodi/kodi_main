@@ -165,16 +165,6 @@ function kodi_main() {
             done <<< "$(echo "$RESOLUTION_JSON" | jq -c '.[]' )"
         fi
         if [[ -z $url ]]; then
-            if ((RESOLUTION_HEIGHT)); then
-                echo "Searching resolution: ${RESOLUTION_HEIGHT}p" >&2
-                if ! url="$($YTDLP -gf "best[height<=$RESOLUTION_HEIGHT]" --user-agent "'$USER_AGENT'" "$INPUT")"
-                then
-                    unset INPUT
-                    kodi_main
-                fi
-            fi
-        fi
-        if [[ -z $url ]]; then
             echo "Searching" >&2
             if ! url="$($YTDLP -gf b --user-agent "'$USER_AGENT'" "$INPUT")"
             then
