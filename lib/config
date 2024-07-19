@@ -16,11 +16,12 @@ SEND_RAW=0
 SHARE_PORT=8080
 REMOTE="kodibox:8080"
 LOGIN="username:password"
-HOST_NAME="$(hostname -I | awk '{print $1}')" #ipv4 is hostname not visible | hostname -i
+HOST_NAME="$(hostname -i)"
 USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
 RESOLUTION_JSON='[
     {"res":"360", "value":["twitch.tv","youtube.com"]}
 ]'
+VERBOSE=0 # display debug activities 0/1
 LISTFORMATS=0
 EOF
 
