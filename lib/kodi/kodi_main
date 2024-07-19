@@ -140,6 +140,7 @@ function kodi_main() {
             $YTDLP --list-formats --user-agent "'$USER_AGENT'"  "$INPUT"
         fi
 
+        #check for valid json
         if jq -e . >/dev/null 2>&1 <<<"$RESOLUTION_JSON"; then
             while read -r json_string;
             do
