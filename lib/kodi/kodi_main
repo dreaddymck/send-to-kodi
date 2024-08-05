@@ -43,8 +43,7 @@ function kodi_main() {
         #     fi
         #     echo "Current mode: $MODE"
         #     kodi_main
-        # fi
-        
+        # fi        
         if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
             source "$SEND_TO_KODI_DIR/lib/commands"
             kodi_main
@@ -150,9 +149,9 @@ function kodi_main() {
         # best="$(ytdl -g "$INPUT")" || error "No videos found or site not supported by youtube-dl"
         # echo "Looking for compatible video..." >&2
         # url="$(ytdl -gf best "$INPUT")"
-
         # There is a better URL (but it will need some pre-processing)
-        # TODO assign $best
+
+        # TODO assign $best or activate this action as a mode
         if [[ "$url" != "$best" ]]; then
 
             video="$(head -n1 <<<"$best" | tail -n1)"
@@ -181,6 +180,8 @@ function kodi_main() {
             ) >"$TMP_DIR/media.strm"
             url="http://$HOST_NAME:$SHARE_PORT/media.strm"
         fi
+        # TODO see above
+
     fi
 
     check_url $url

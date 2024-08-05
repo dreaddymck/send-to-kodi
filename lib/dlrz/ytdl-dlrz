@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 #
-# REMOTE_SSH=""
-# # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
-# DESTINATION_PATH="/mnt/d/Videos/playlist/"
-# RHEIGHT="640"
-# USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
-# PWD=$(pwd)
 
 function ytdl_dlrz_main() {
 
@@ -17,19 +11,15 @@ function ytdl_dlrz_main() {
         ytdl_dlrz_help
         ytdl_dlrz_read
     fi
-
-    # yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --user-agent "'$USER_AGENT'" "$1"
+    # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --trim-filenames 50 --user-agent "'$USER_AGENT'" "$1"); then
     echo "Downloading"
     if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --user-agent "'$USER_AGENT'" "$1"); then
-        # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
+
         echo "yt-dlp failed: $err"
         ytdl_dlrz_read
     fi
-
     for i in *.mp4; do
-        # ffmpeg -i "$i" -vf scale=$RHEIGHT:-1 -preset ultrafast -crf 18 "${i%.*}.$RHEIGHT.mp4"
-        # ffmpeg -i "$i" -vf scale=$RHEIGHT:-2 -preset ultrafast "${i%.*}.$RHEIGHT.mp4"
         if [[ -n $RHEIGHT ]]; then
             ffmpeg -i "$i" -vf scale=-2:$RHEIGHT -preset ultrafast "${i%.*}.$RHEIGHT.mp4"
             rm "$i"
@@ -45,7 +35,6 @@ function ytdl_dlrz_main() {
             rm "${i%.*}.$RHEIGHT.mp4"
         fi
     done
-
     ytdl_dlrz_list
     ytdl_dlrz_read
 }
@@ -83,7 +72,7 @@ function ytdl_dlrz_cmd() {
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
         ytdl_dlrz_read
-    fi    
+    fi
 }
 function ytdl_dlrz_banner() {
 
