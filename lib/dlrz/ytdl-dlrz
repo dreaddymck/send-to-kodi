@@ -71,8 +71,12 @@ function ytdl_dlrz_cmd() {
     fi
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
-        ytdl_dlrz_read
+        # ytdl_dlrz_read
     fi
+    if [[ -z $INPUT ]]; then
+        unset INPUT
+        ytdl_dlrz_read
+    fi        
 }
 function ytdl_dlrz_banner() {
 
