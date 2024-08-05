@@ -28,11 +28,11 @@ VERBOSE=0 # display debug activities 0/1
 LISTFORMATS=0
 MODE="default" #values: default/stream
 
-#For DLRZ
+#For DLRZ (download/resize to local/ssh storage)
 REMOTE_SSH=""
 # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
 DESTINATION_PATH="/mnt/d/Videos/playlist/"
-RHEIGHT="640"
+RHEIGHT="360"
 PWD=$(pwd)
 EOF
 
