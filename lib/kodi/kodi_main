@@ -17,55 +17,9 @@ function kodi_main() {
             unset INPUT
             exit
         fi
-        if [[ "$INPUT" =~ ^(stop|halt)$ ]]; then
-            kodi_stop
-            unset INPUT
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(pause)$ ]]; then
-            kodi_pause
-            unset INPUT
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
-            kodi_shutdown
-            unset INPUT
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(reboot)$ ]]; then
-            kodi_reboot
-            unset INPUT
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(next)$ ]]; then
-            kodi_next
-            unset INPUT
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(previous|prev)$ ]]; then
-            kodi_previous
-            unset INPUT
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(volume|vol)(.[0-9]*)$ ]]; then
-            VOLUME="${INPUT//[!0-9]/}"
-            kodi_volume "$VOLUME"
-            unset INPUT
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(active)$ ]]; then
-            unset INPUT
-            kodi_get_active
-            kodi_main
-        fi
         if [[ "$INPUT" =~ ^(help|\?)$ ]]; then
             unset INPUT
             show_help
-            kodi_main
-        fi
-        if [[ "$INPUT" =~ ^(version)$ ]]; then
-            unset INPUT
-            version
             kodi_main
         fi
         if [[ "$INPUT" =~ ^(iptv)$ ]]; then
@@ -90,11 +44,13 @@ function kodi_main() {
         #     echo "Current mode: $MODE"
         #     kodi_main
         # fi
+        
+        if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
+            source "$SEND_TO_KODI_DIR/lib/commands"
+            kodi_main
+        fi                
         if [[ -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
             source "$SEND_TO_KODI_CUSTOM_COMMANDS"
-        fi
-        if [[ -z $INPUT ]]; then
-            kodi_main
         fi
     fi
 

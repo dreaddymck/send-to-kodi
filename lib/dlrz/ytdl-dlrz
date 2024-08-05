@@ -63,6 +63,7 @@ function ytdl_dlrz_read() {
 
 }
 function ytdl_dlrz_cmd() {
+
     if [[ "$1" =~ ^(help)$ ]]; then
         ytdl_dlrz_help
         ytdl_dlrz_read
@@ -75,10 +76,14 @@ function ytdl_dlrz_cmd() {
         ytdl_dlrz_clean
         ytdl_dlrz_read
     fi
-    if [[ "$1" =~ ^(home)$ ]]; then
+    if [[ "$1" =~ ^(home|main)$ ]]; then
         unset INPUT
         kodi_main
     fi
+    if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
+        source "$SEND_TO_KODI_DIR/lib/commands"
+        ytdl_dlrz_read
+    fi    
 }
 function ytdl_dlrz_banner() {
 
@@ -91,7 +96,7 @@ function ytdl_dlrz_banner() {
 
 }
 function ytdl_dlrz_clean() {
-    
+
     echo "Cleaning up"
 
     if [[ -n $REMOTE_SSH ]]; then

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+        if [[ "$INPUT" =~ ^(stop|halt)$ ]]; then
+            kodi_stop
+            unset INPUT
+        fi
+        if [[ "$INPUT" =~ ^(pause)$ ]]; then
+            kodi_pause
+            unset INPUT
+        fi
+        if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
+            kodi_shutdown
+            unset INPUT
+        fi
+        if [[ "$INPUT" =~ ^(reboot)$ ]]; then
+            kodi_reboot
+            unset INPUT
+        fi
+        if [[ "$INPUT" =~ ^(next)$ ]]; then
+            kodi_next
+            unset INPUT
+        fi
+        if [[ "$INPUT" =~ ^(previous|prev)$ ]]; then
+            kodi_previous
+            unset INPUT
+        fi
+        if [[ "$INPUT" =~ ^(volume|vol)(.[0-9]*)$ ]]; then
+            VOLUME="${INPUT//[!0-9]/}"
+            kodi_volume "$VOLUME"
+            unset INPUT
+        fi
+        if [[ "$INPUT" =~ ^(version)$ ]]; then
+            unset INPUT
+            version
+        fi
