@@ -26,13 +26,13 @@ RESOLUTION_JSON='[
 ]'
 VERBOSE=0 # display debug activities 0/1
 LISTFORMATS=0
-MODE="url" #values: url/download/stream
+MODE="default" #values: default/stream
 
 #For DLRZ
 REMOTE_SSH=""
 # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
 DESTINATION_PATH="/mnt/d/Videos/playlist/"
-RWIDTH="640"
+RHEIGHT="640"
 PWD=$(pwd)
 EOF
 

@@ -25,15 +25,11 @@ Offering the following features
 
    * `yt-dlp`           to add support for hundreds of video sites.
    * `jq`               JSON Processing
+   * `ffmpeg`           media manipulation
    * `fzf`              required for iptv interface (optional) - https://github.com/junegunn/fzf
    * `python-twisted`   to enable local file sharing and MPEG-DASH support (optional). Environment variables: TWISTED_PATH - Path to python-twisted webserver
    * `PhantomJS`        Scriptable Headless Browser (optional)
-4. Run it from the command line:
-
-   ```bash
-   ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
-   ```
-5. Edit config file $HOME/.config/send_to_kodi/.sendtokodi to customize default settings:
+4. Edit config file $HOME/.config/send_to_kodi/.sendtokodi to customize default settings:
 
    ```bash
    #!/usr/bin/env bash
@@ -51,6 +47,11 @@ Offering the following features
    ]'
    #display available formats
    LISTFORMATS=0
+   ```
+5. Run it from the command line:
+
+   ```bash
+   ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
    ```
 6. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
 
@@ -87,7 +88,7 @@ Offering the following features
    version                display git version and last log entry
    exit|quit
    iptv                   load iptv interface (work in progress)
-   mode                   WIP: values: url/download/stream. Mode of operation: get "url" (default), "download" to remote or local storage, download local storage then stream.
+   dlrz                   option to download and resize via ffmpeg.
    ```
 9. Ad custom commands to the following script: $HOME/.config/send_to_kodi/send_to_kodi_commands
 
