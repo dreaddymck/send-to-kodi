@@ -11,7 +11,6 @@ Offering the following features
 * Send compatible local media to Kodi.
 * MPEG-DASH (high quality video) support.
 * IPTV m3u playlist interface, send iptv to kodi (__Work In Progress__)
-* Zenity input interface
 
 *Note: Kodi add-ons may be required for proprietory media streams.*
 
@@ -28,7 +27,6 @@ Offering the following features
    * `jq`               JSON Processing
    * `fzf`              required for iptv interface (optional) - https://github.com/junegunn/fzf
    * `python-twisted`   to enable local file sharing and MPEG-DASH support (optional). Environment variables: TWISTED_PATH - Path to python-twisted webserver
-   * `zenity`           Graphical interface (optional)
    * `PhantomJS`        Scriptable Headless Browser (optional)
 4. Run it from the command line:
 
@@ -71,7 +69,6 @@ Offering the following features
    -u USERNAME:PASSWORD   Kodi login credentials
    -x                     Do not try to resolve URL, just send it
    -y                     Use Kodi's youtube addon instead of youtube-dl
-   -g                     enable zenity gui (default disabled)
 
    -v                     display git version and last log entry
    ```
@@ -90,11 +87,13 @@ Offering the following features
    version                display git version and last log entry
    exit|quit
    iptv                   load iptv interface (work in progress)
+   mode                   WIP: values: url/download/stream. Mode of operation: get "url" (default), "download" to remote or local storage, download local storage then stream.
    ```
 9. Ad custom commands to the following script: $HOME/.config/send_to_kodi/send_to_kodi_commands
 
    ```bash
    if [[ "$INPUT" =~ ^(command)$ ]]; then
+       unset INPUT #important
        your-custom-command
        kodi_main #back to send-to-kodi.sh prompt
    fi
@@ -112,6 +111,4 @@ Offering the following features
 
 11. Note: Gracefully exit the iptv interface with `ctrl+c` or use an an invalid search then select the empty field.
 
-## Zenity dialogue
 
- ![Screenshot of dialog box](https://user-images.githubusercontent.com/7693838/119225728-d94f1000-bb05-11eb-9ff2-5a32d2974f55.png)

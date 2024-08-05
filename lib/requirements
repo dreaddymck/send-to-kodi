@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
 
-type yt-dlp &>/dev/null
-if [[ $? != 0 ]]; then
-    error "yt-dlp required"
+msg=""
+if ! type yt-dlp &>/dev/null; then
+    msg=" yt-dlp"
 fi
-type jq &>/dev/null
-if [[ $? != 0 ]]; then
-    error "jq required"
+if ! type jq &>/dev/null; then
+    msg=${msg}" jq"
+fi
+if ! type ffmpeg &>/dev/null; then
+    msg=${msg}" ffmpeg"
+fi
+if [[ -n $msg ]]; then
+    msg="Requirements missing :"${msg}
+    echo "$msg"
+    exit 1
 fi
 
-YTDLP="$(which yt-dlp)"
+
 
 
 

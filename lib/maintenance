@@ -3,23 +3,19 @@
 # Show a error dialog or message
 # args: MESSAGE
 function error() {
-    if ((GUI)); then
-        zenity --error --ellipsize --text "$1"
-    else
-        printf '%s\n' "$1" >&2
-    fi
+
+    printf '%s\n' "$1" >&2
+
     exit 1
 }
 # Show a question dialog or prompt
 # args: MESSAGE
 function question() {
-    if ((GUI)); then
-        zenity --question --ellipsize --text "$1"
-    else
-        printf '%s [y/N] ' "$1" >&2
-        read -r
-        [[ $REPLY =~ y|Y ]]
-    fi
+
+    printf '%s [y/N] ' "$1" >&2
+    read -r
+    [[ $REPLY =~ y|Y ]]
+
 }
 # The EXIT trap
 function cleanup() {

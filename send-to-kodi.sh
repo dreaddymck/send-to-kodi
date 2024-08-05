@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-#TODO: Remove Zenity support
 #TODO: Create web application support
 #TODO: option in application to change IPTV playlist
 
@@ -13,6 +12,7 @@ source "$SEND_TO_KODI_DIR/lib/config"
 source "$SEND_TO_KODI_DIR/lib/logo"
 source "$SEND_TO_KODI_DIR/lib/about"
 source "$SEND_TO_KODI_DIR/lib/server"
+source "$SEND_TO_KODI_DIR/lib/dlrz/ytdl-dlrz"
 source "$SEND_TO_KODI_DIR/lib/iptv/iptv_channels"
 source "$SEND_TO_KODI_DIR/lib/iptv/iptv_main"
 source "$SEND_TO_KODI_DIR/lib/kodi/kodi_requests"

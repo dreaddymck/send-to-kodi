@@ -8,77 +8,89 @@ function kodi_main() {
 
     if [ -z $INPUT ]; then
 
-        if ((GUI)); then
-            INPUT="$(zenity --entry --title "Send to Kodi" --text "Paste a URL or press OK to select a file")" || exit
-            [[ $INPUT ]] || INPUT="$(zenity --file-selection)" || kodi_main
-        else
-            read -r -e -d $'\n' -p 'Enter[url/path/cmd]: ' INPUT
+        read -r -e -d $'\n' -p 'SENDTOKODI[url/path/cmd]: ' INPUT
 
-            if [[ "$INPUT" =~ ^(exit|quit)$ ]]; then
-                unset INPUT
-                exit
+        if [[ "$INPUT" =~ ^(exit|quit)$ ]]; then
+            unset INPUT
+            exit
+        fi
+        if [[ "$INPUT" =~ ^(stop|halt)$ ]]; then
+            kodi_stop
+            unset INPUT
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(pause)$ ]]; then
+            kodi_pause
+            unset INPUT
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
+            kodi_shutdown
+            unset INPUT
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(reboot)$ ]]; then
+            kodi_reboot
+            unset INPUT
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(next)$ ]]; then
+            kodi_next
+            unset INPUT
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(previous|prev)$ ]]; then
+            kodi_previous
+            unset INPUT
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(volume|vol)(.[0-9]*)$ ]]; then
+            VOLUME="${INPUT//[!0-9]/}"
+            kodi_volume "$VOLUME"
+            unset INPUT
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(active)$ ]]; then
+            unset INPUT
+            kodi_get_active
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(help|\?)$ ]]; then
+            unset INPUT
+            show_help
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(version)$ ]]; then
+            unset INPUT
+            version
+            kodi_main
+        fi
+        if [[ "$INPUT" =~ ^(iptv)$ ]]; then
+            unset INPUT
+            iptv_main
+        fi
+        if [[ "$INPUT" =~ ^(dlrz|)$ ]]; then
+            unset INPUT
+            ytdl_dlrz
+        fi
+        if [[ "$INPUT" =~ ^(mode)$ ]] || [[ "$INPUT" =~ ^(mode)(.[a-z]*)$ ]]; then
+            input_array=($INPUT)
+            unset INPUT
+            #update MODE entry in config file
+            if [[ ${input_array[1]} =~ ^(url|download|stream)$ ]]; then
+                if ! sed -i "s/\(MODE *= *\).*/\1${input_array[1]} \#values\: url\/download\/stream" "$SEND_TO_KODI_CONF"; then
+                    echo "error updating config entry"
+                fi
+                MODE=${input_array[1]}
             fi
-            if [[ "$INPUT" =~ ^(stop|halt)$ ]]; then
-                kodi_stop
-                unset INPUT
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(pause)$ ]]; then
-                kodi_pause
-                unset INPUT
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
-                kodi_shutdown
-                unset INPUT
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(reboot)$ ]]; then
-                kodi_reboot
-                unset INPUT
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(next)$ ]]; then
-                kodi_next
-                unset INPUT
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(previous|prev)$ ]]; then
-                kodi_previous
-                unset INPUT
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(volume|vol)(.[0-9]*)$ ]]; then
-                VOLUME="${INPUT//[!0-9]/}"
-                kodi_volume "$VOLUME"
-                unset INPUT
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(iptv)$ ]]; then
-                unset INPUT
-                iptv_main
-            fi
-            if [[ "$INPUT" =~ ^(active)$ ]]; then
-                unset INPUT
-                kodi_get_active
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(help|\?)$ ]]; then
-                unset INPUT
-                show_help
-                kodi_main
-            fi
-            if [[ "$INPUT" =~ ^(version)$ ]]; then
-                unset INPUT
-                version
-                kodi_main
-            fi
-            if [[ -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
-                source "$SEND_TO_KODI_CUSTOM_COMMANDS"
-            fi
-            if [[ -z $INPUT ]]; then
-                kodi_main
-            fi
+            echo "Current mode: $MODE"
+            kodi_main
+        fi
+        if [[ -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
+            source "$SEND_TO_KODI_CUSTOM_COMMANDS"
+        fi
+        if [[ -z $INPUT ]]; then
+            kodi_main
         fi
     fi
 
@@ -137,13 +149,12 @@ function kodi_main() {
 
         #list media resolutions if avaialable
         if ((LISTFORMATS)); then
-            $YTDLP --list-formats --user-agent "'$USER_AGENT'"  "$INPUT"
+            $YTDLP --list-formats --user-agent "'$USER_AGENT'" "$INPUT"
         fi
 
         #check for valid json
         if jq -e . >/dev/null 2>&1 <<<"$RESOLUTION_JSON"; then
-            while read -r json_string;
-            do
+            while read -r json_string; do
                 # Remove escape characters
                 clean_json_string=$(echo "$json_string" | jq -r '.')
                 res=$(echo "$clean_json_string" | jq -r '.res')
@@ -157,18 +168,17 @@ function kodi_main() {
                         fi
                     fi
 
-                done <<< "$(echo "$clean_json_string" | jq -r '.value[]')"
+                done <<<"$(echo "$clean_json_string" | jq -r '.value[]')"
 
                 if [[ -n $url ]]; then
                     break
                 fi
 
-            done <<< "$(echo "$RESOLUTION_JSON" | jq -c '.[]' )"
+            done <<<"$(echo "$RESOLUTION_JSON" | jq -c '.[]')"
         fi
         if [[ -z $url ]]; then
             echo "Searching" >&2
-            if ! url="$($YTDLP -gf b --user-agent "'$USER_AGENT'" "$INPUT")"
-            then
+            if ! url="$($YTDLP -gf b --user-agent "'$USER_AGENT'" "$INPUT")"; then
                 unset INPUT
                 kodi_main
             fi
@@ -185,8 +195,8 @@ function kodi_main() {
         # TODO assign $best
         if [[ "$url" != "$best" ]]; then
 
-            video="$(head -n1 <<< "$best" | tail -n1)"
-            audio="$(head -n2 <<< "$best" | tail -n1)"
+            video="$(head -n1 <<<"$best" | tail -n1)"
+            audio="$(head -n2 <<<"$best" | tail -n1)"
 
             # MPEG-DASH question
             if [[ $video == "$audio" && $video =~ $dash ]]; then
@@ -203,10 +213,12 @@ function kodi_main() {
         # MPEG-DASH
         # Do this down here since both $url and $best can be a MPD
         if [[ $url =~ $dash ]]; then
-            serve  # create TMP_DIR
-            (echo '#KODIPROP:inputstream=inputstream.adaptive'
-            echo '#KODIPROP:inputstream.adaptive.manifest_type=mpd'
-            echo "$video") > "$TMP_DIR/media.strm"
+            serve # create TMP_DIR
+            (
+                echo '#KODIPROP:inputstream=inputstream.adaptive'
+                echo '#KODIPROP:inputstream.adaptive.manifest_type=mpd'
+                echo "$video"
+            ) >"$TMP_DIR/media.strm"
             url="http://$HOST_NAME:$SHARE_PORT/media.strm"
         fi
     fi
@@ -232,12 +244,10 @@ function kodi_main() {
 
     # Maybe wait for server (trap will kill it on EXIT)
     if [[ $TWISTED_PID ]]; then
-        if ((GUI)); then
-            zenity --info --no-wrap --text "File share active" --ok-label "Stop"
-        else
-            echo "File share active, press Ctrl+C to abort..." >&2
-            wait
-        fi
+
+        echo "File share active, press Ctrl+C to abort..." >&2
+        wait
+
     fi
 
     kodi_main

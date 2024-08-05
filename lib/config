@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
+YTDLP="$(which yt-dlp)"
 SEND_TO_KODI_HOME="$HOME/.config/send_to_kodi"
-SEND_TO_KODI_CONF="$SEND_TO_KODI_HOME/.sendtokodi"
-SEND_TO_KODI_CUSTOM_COMMANDS="$HOME/.config/send_to_kodi/send_to_kodi_commands"
+SEND_TO_KODI_CONF="$SEND_TO_KODI_HOME/config"
+SEND_TO_KODI_CUSTOM_COMMANDS="$HOME/.config/send_to_kodi/commands"
+
+source "$SEND_TO_KODI_DIR/config-fix"
 
 if [[ ! -f "$SEND_TO_KODI_CONF" ]]; then
-  mkdir -p "$SEND_TO_KODI_HOME"
-  #HOST_NAME="$(hostname -I | awk '{print $1}' || hostname -i )" #ipv4 is hostname not visible
-  cat >"$SEND_TO_KODI_CONF" <<EOF
+    mkdir -p "$SEND_TO_KODI_HOME"
+    #HOST_NAME="$(hostname -I | awk '{print $1}' || hostname -i )" #ipv4 is hostname not visible
+    cat >"$SEND_TO_KODI_CONF" <<EOF
 #!/usr/bin/env bash
 GUI=0
 DOWNLOAD_DIR=~/Download/
@@ -23,27 +26,43 @@ RESOLUTION_JSON='[
 ]'
 VERBOSE=0 # display debug activities 0/1
 LISTFORMATS=0
+MODE="url" #values: url/download/stream
+
+#For DLRZ
+REMOTE_SSH=""
+# DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
+DESTINATION_PATH="/mnt/d/Videos/playlist/"
+RWIDTH="640"
+PWD=$(pwd)
 EOF
 
 fi
 
 source "$SEND_TO_KODI_CONF"
 
-# custom commands can be defined in this file
+# custom commands defined in this file
 if [[ ! -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
-  mkdir -p "$SEND_TO_KODI_CUSTOM_COMMANDS"
-  cat >"$SEND_TO_KODI_CUSTOM_COMMANDS" <<EOF
+    mkdir -p "$SEND_TO_KODI_CUSTOM_COMMANDS"
+    cat >"$SEND_TO_KODI_CUSTOM_COMMANDS" <<EOF
 #!/usr/bin/env bash
+            ##Example
             # if [[ '"$INPUT"' =~ ^(respring)$ ]]; then
+
+                  ##required
             #     unset INPUT
+
+                  ##do something
             #     ssh ipad respring
+
+                  ##required
             #     kodi_main
+
             # fi
 EOF
 
 fi
 
-#iptv def
+#iptv defines
 config_path="$HOME/.config/iptv/"
 channels_file="$config_path/channels"
 m3u_url_file="$config_path/m3u_url"

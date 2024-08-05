@@ -8,12 +8,8 @@ download_and_serve() {
     file="${DOWNLOAD_DIR:?}/$TMP_FILE"
 
     echo "Downloading video..." >&2
-    if ((GUI)); then
-        # Filter out the percentage but only 2 digits, never print 100 as it will kill zenity
-        zenity --progress --auto-close --text "Downloading video..." < <($YTDLP -o "$file" --newline "$1" | sed -Eun 's/.* ([0-9][0-9]?)\.[0-9]%.*/\1/p') || exit
-    else
-        $YTDLP -o "$file" "$1"
-    fi
+
+    $YTDLP -o "$file" "$1"
 
     # Sometimes youtube-dl changes the filename from mp4 to mkv
     if [[ ! -f $file ]]; then

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+SEND_TO_KODI_CONF_OLD="$SEND_TO_KODI_HOME/.sendtokodi"
+SEND_TO_KODI_CUSTOM_COMMANDS_OLD="$HOME/.config/send_to_kodi/send_to_kodi_commands"
+
+if [[ -f "$SEND_TO_KODI_CONF_OLD" ]]; then
+    if ! cp "$SEND_TO_KODI_CONF_OLD" "$SEND_TO_KODI_CONF"; then
+        echo "Error migrating config"
+        exit
+    fi
+    if ! rm "$SEND_TO_KODI_CONF_OLD"; then
+        echo "Error deleting old config file"
+        exit
+    fi
+    rm "$SEND_TO_KODI_CONF_OLD"
+fi
+if [[ -f "$SEND_TO_KODI_CUSTOM_COMMANDS_OLD" ]]; then
+    if ! cp "$SEND_TO_KODI_CUSTOM_COMMANDS_OLD" "$SEND_TO_KODI_CUSTOM_COMMANDS"; then
+        echo "Error migrating config"
+        exit
+    fi
+    if ! rm "$SEND_TO_KODI_CUSTOM_COMMANDS_OLD"; then
+        echo "Error deleting old commands file"
+        exit
+    fi
+fi

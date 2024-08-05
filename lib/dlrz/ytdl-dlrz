@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+#
+# REMOTE_SSH=""
+# # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
+# DESTINATION_PATH="/mnt/d/Videos/playlist/"
+# RWIDTH="640"
+# USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
+# PWD=$(pwd)
+
+function ytdl_dlrz_main() {
+
+    # ytdl_dlrz_check_url "$1"
+    local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
+
+    if [[ ! $1 =~ $url_pattern ]]; then
+        echo "Unsupported imput---: $1"
+        ytdl_dlrz_help
+        ytdl_dlrz_read
+    fi
+
+    # yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --user-agent "'$USER_AGENT'" "$1"
+    # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --trim-filenames 50 --user-agent "'$USER_AGENT'" "$1"); then
+    echo "Downloading"
+    if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --user-agent "'$USER_AGENT'" "$1"); then
+        # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
+        echo "yt-dlp failed: $err"
+        ytdl_dlrz_read
+    fi
+
+    for i in *.mp4; do
+        # ffmpeg -i "$i" -vf scale=$RWIDTH:-1 -preset ultrafast -crf 18 "${i%.*}.$RWIDTH.mp4"
+        # ffmpeg -i "$i" -vf scale=$RWIDTH:-2 -preset ultrafast "${i%.*}.$RWIDTH.mp4"
+        if [[ -n $RWIDTH ]]; then
+            ffmpeg -i "$i" -vf scale=$RWIDTH:-2 -preset ultrafast "${i%.*}.$RWIDTH.mp4"
+            rm "$i"
+        fi
+        if [[ -n $DESTINATION_PATH ]]; then
+            if [[ -n $REMOTE_SSH ]]; then
+                rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RWIDTH.mp4" "$REMOTE_SSH":"$DESTINATION_PATH"
+                echo "Server Reset"
+                ssh "$REMOTE_SSH" 'sudo service minidlna force-reload'
+            else
+                rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RWIDTH.mp4" "$DESTINATION_PATH"
+            fi
+            rm "${i%.*}.$RWIDTH.mp4"
+        fi
+    done
+
+    ytdl_dlrz_list
+    ytdl_dlrz_read
+}
+function ytdl_dlrz_read() {
+
+    read -r -e -d $'\n' -p 'DOWNLOAD/RESIZE[url/cmd]: ' INPUT
+    if [[ -z $INPUT ]]; then
+        ytdl_dlrz_read
+    fi
+    if [[ "$INPUT" =~ ^(exit|quit)$ ]]; then
+        exit
+    fi
+    ytdl_dlrz_cmd "$INPUT"
+    ytdl_dlrz_main "$INPUT"
+
+}
+function ytdl_dlrz_cmd() {
+    if [[ "$1" =~ ^(help)$ ]]; then
+        ytdl_dlrz_help
+        ytdl_dlrz_read
+    fi
+    if [[ "$1" =~ ^(list)$ ]]; then
+        ytdl_dlrz_list
+        ytdl_dlrz_read
+    fi
+    if [[ "$1" =~ ^(clean)$ ]]; then
+        ytdl_dlrz_clean
+        ytdl_dlrz_read
+    fi
+    if [[ "$1" =~ ^(home)$ ]]; then
+        unset INPUT
+        kodi_main
+    fi
+}
+function ytdl_dlrz_banner() {
+
+    date
+    cd "$PWD" || exit
+    echo "host: $REMOTE_SSH"
+    echo "destination: $DESTINATION_PATH"
+    echo "local: $PWD"
+    echo "width: $RWIDTH"
+
+}
+function ytdl_dlrz_clean() {
+    
+    echo "Cleaning up"
+
+    if [[ -n $REMOTE_SSH ]]; then
+        ssh "$REMOTE_SSH" 'rm '$DESTINATION_PATH'*'
+    else
+        rm "$DESTINATION_PATH"*
+    fi
+}
+
+function ytdl_dlrz_list() {
+
+    if [[ -n $REMOTE_SSH ]]; then
+        ssh "$REMOTE_SSH" 'ls -A '$DESTINATION_PATH
+    else
+        ls -A "$DESTINATION_PATH"
+    fi
+
+}
+function ytdl_dlrz_help() {
+    echo "cmd: list, clean, help, home"
+}
+
+function ytdl_dlrz() {
+
+    ytdl_dlrz_banner
+    ytdl_dlrz_help
+    if [ $# -eq 0 ]; then
+        ytdl_dlrz_read
+    fi
+    ytdl_dlrz_cmd "$@"
+    ytdl_dlrz_main "$@"
+
+}
