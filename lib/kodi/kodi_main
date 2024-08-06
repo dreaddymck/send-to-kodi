@@ -23,7 +23,7 @@ function kodi_main() {
             unset INPUT
             iptv_main
         fi
-        if [[ "$INPUT" =~ ^(dlrz|)$ ]]; then
+        if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
             unset INPUT
             ytdl_dlrz
         fi

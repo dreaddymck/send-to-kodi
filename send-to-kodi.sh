@@ -4,8 +4,6 @@
 #TODO: option in application to change IPTV playlist
 
 SEND_TO_KODI_DIR="$(dirname "$(readlink -f "$0")")"
-# echo "$SEND_TO_KODI_DIR" >&2
-
 source "$SEND_TO_KODI_DIR/lib/maintenance"
 source "$SEND_TO_KODI_DIR/lib/requirements"
 source "$SEND_TO_KODI_DIR/lib/config"
