@@ -49,13 +49,13 @@ function kodi_get_active() {
     # echo "Player id: $active_player"
 }
 function kodi_volume(){
-
-    if [[ $1 ]] && [[ $1 -ge 0 ]] && [[ $1 -le 100 ]];
+    VOLUME="${INPUT//[!0-9]/}"
+    if [[ $VOLUME ]] && [[ $VOLUME -ge 0 ]] && [[ $VOLUME -le 100 ]];
     then
         if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
-            echo "Request volume: $1%" >&2
+            echo "Request volume: $VOLUME%" >&2
         fi
-        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$1"'}}'
+        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$VOLUME"'}}'
     fi
 }
 function kodi_shutdown() {
@@ -86,7 +86,7 @@ function check_url() {
     local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
 
     if [[ ! $input_string =~ $url_pattern ]]; then
-        echo "Unsupported url: $input_string"
+        echo "Unsupported[url/path/cmd]: $input_string"
         unset INPUT
         kodi_main
     fi

@@ -1,35 +1,35 @@
 #!/usr/bin/env bash
 
-        if [[ "$INPUT" =~ ^(stop|halt)$ ]]; then
-            kodi_stop
-            unset INPUT
-        fi
-        if [[ "$INPUT" =~ ^(pause)$ ]]; then
-            kodi_pause
-            unset INPUT
-        fi
-        if [[ "$INPUT" =~ ^(shutdown)$ ]]; then
-            kodi_shutdown
-            unset INPUT
-        fi
-        if [[ "$INPUT" =~ ^(reboot)$ ]]; then
-            kodi_reboot
-            unset INPUT
-        fi
-        if [[ "$INPUT" =~ ^(next)$ ]]; then
-            kodi_next
-            unset INPUT
-        fi
-        if [[ "$INPUT" =~ ^(previous|prev)$ ]]; then
-            kodi_previous
-            unset INPUT
-        fi
-        if [[ "$INPUT" =~ ^(volume|vol)(.[0-9]*)$ ]]; then
-            VOLUME="${INPUT//[!0-9]/}"
-            kodi_volume "$VOLUME"
-            unset INPUT
-        fi
-        if [[ "$INPUT" =~ ^(version)$ ]]; then
-            unset INPUT
-            version
-        fi
+CMDS='[
+    {"command":"stop|halt", "func":"kodi_stop"},
+    {"command":"pause", "func":"kodi_pause"},
+    {"command":"shutdown", "func":"kodi_shutdown"},
+    {"command":"reboot", "func":"kodi_reboot"},
+    {"command":"next", "func":"kodi_next"},
+    {"command":"previous|prev", "func":"kodi_prev"},
+    {"command":"volume|vol)(.[0-9]*", "func":"kodi_volume"},
+    {"command":"version", "func":"version"}
+]' 
+command=""
+func=""
+
+
+if jq -e . >/dev/null 2>&1 <<<"$CMDS"; then #check for valid json
+
+    while read -r json_string; do
+
+        clean_json_string=$(echo "$json_string" | jq -r '.') # Remove escape characters
+        command=$(echo "$clean_json_string" | jq -r '.command')
+
+        if [[ "$INPUT" =~ ^($command)$ ]]; then
+            func=$(echo "$clean_json_string" | jq -r '.func')
+            break
+        fi        
+
+    done <<<"$(echo "$CMDS" | jq -c '.[]')"
+    
+    if [[ -n $func ]]; then
+        $func
+        unset INPUT
+    fi
+fi

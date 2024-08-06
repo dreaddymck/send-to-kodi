@@ -7,7 +7,7 @@ function ytdl_dlrz_main() {
     local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
 
     if [[ ! $1 =~ $url_pattern ]]; then
-        echo "Unsupported imput---: $1"
+        echo "Unsupported[url/cmd]: $1"
         ytdl_dlrz_help
         ytdl_dlrz_read
     fi
