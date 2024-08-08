@@ -9,11 +9,6 @@ function kodi_main() {
     if [ -z "$INPUT" ]; then
 
         read -r -e -d $'\n' -p 'SENDTOKODI[url/path/cmd]: ' INPUT
-
-        # if [[ "$INPUT" =~ ^(iptv)$ ]]; then
-        #     unset INPUT
-        #     iptv_main
-        # fi
         if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
             unset INPUT
             ytdl_dlrz
