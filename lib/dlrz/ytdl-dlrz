@@ -43,7 +43,7 @@ function ytdl_dlrz_main() {
 }
 function ytdl_dlrz_read() {
 
-    read -r -e -d $'\n' -p 'DOWNLOAD / RESIZE [url/cmd]: ' INPUT
+    read -r -e -d $'\n' -p 'DOWNLOAD/RESIZE[url/cmd]: ' INPUT
     if [[ -z $INPUT ]]; then
         ytdl_dlrz_read
     fi

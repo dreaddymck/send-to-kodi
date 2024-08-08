@@ -5,8 +5,8 @@ function send_to_kodi_banner() {
     echo "$SEND_TO_KODI_LOGO_ASCII"
     date
     echo "PID: $$"
-    echo "Kodi: $REMOTE"
-    echo "Local: $HOST_NAME"
+    echo "REMOTE: $REMOTE"
+    echo "LOCAL: $HOST_NAME"
 }
 
 function ytdl_dlrz_banner() {
@@ -14,7 +14,8 @@ function ytdl_dlrz_banner() {
     echo "$DOWNLOAD_LOGO_ASCII"
     date
     echo "PID: $$"
-    echo "host: $REMOTE_SSH"
-    echo "destination: $DESTINATION_PATH"
-    echo "current: $PWD"
+    echo "HEIGHT: $RHEIGHT"
+    echo "SSH: $REMOTE_SSH"
+    echo "DIRECTORY: $DESTINATION_PATH"
+    echo "CURRENT: $PWD"
 }

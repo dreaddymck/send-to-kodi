@@ -11,7 +11,8 @@ CMDS='[
     {"command":"previous|prev", "func":"kodi_prev"},
     {"command":"volume|vol)(.[0-9]*", "func":"kodi_volume"},
     {"command":"volamp|amp)(.[0-9]*", "func":"kodi_volamp"},
-    {"command":"version", "func":"version"}
+    {"command":"version", "func":"version"},
+    {"command":"iptv", "func":"iptv_main"}
 ]' 
 command=""
 func=""
