@@ -44,7 +44,7 @@ Offering the following features
    USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
    RESOLUTION_JSON='[
       {"res":"360", "value" : ["twitch.tv","youtube.com"]}
-   ]'
+   ]' # resolution height priority per domain.
    VOLUME_AMP_STEPS=10 #volume amplification steps up/down
    VERBOSE=0 # display debug activities 0/1
    LISTFORMATS=0
@@ -55,7 +55,7 @@ Offering the following features
    # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
    DESTINATION_PATH="/mnt/d/Videos/playlist/"
    RHEIGHT="360"
-   PWD=$(pwd)
+ 
    ```
 5. Run it from the command line:
 
