@@ -121,13 +121,11 @@ function kodi_main() {
         # Honestly not sure what to do with this.
 
         dash='^[^?]*\.mpd(\?|$)'
-
         # echo "Looking for best video..." >&2
         # best="$(ytdl -g "$INPUT")" || error "No videos found or site not supported by youtube-dl"
         # echo "Looking for compatible video..." >&2
         # url="$(ytdl -gf best "$INPUT")"
         # There is a better URL (but it will need some pre-processing)
-
         # TODO assign $best or activate this action as a mode
         if [[ "$url" != "$best" ]]; then
 
@@ -161,22 +159,15 @@ function kodi_main() {
 
     fi
 
-    check_url $url
-
-    kodi_get_active
-
+    check_url "$url"  
     kodi_send
-
     history -s "$INPUT"
-
     unset INPUT
 
     # Maybe wait for server (trap will kill it on EXIT)
     if [[ $TWISTED_PID ]]; then
-
         echo "File share active, press Ctrl+C to abort..." >&2
         wait
-
     fi
 
     kodi_main
