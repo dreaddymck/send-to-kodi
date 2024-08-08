@@ -10,8 +10,14 @@ fi
 if ! type ffmpeg &>/dev/null; then
     msg=${msg}" ffmpeg"
 fi
+if ! type curl &>/dev/null; then
+    msg=${msg}" curl"
+fi
+if ! type fzf &>/dev/null; then
+    msg=${msg}" fzf"
+fi
 if [[ -n $msg ]]; then
-    msg="Requirements missing :"${msg}
+    msg="Missing Requirements:"${msg}
     echo "$msg"
     exit 1
 fi

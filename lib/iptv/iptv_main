@@ -3,11 +3,6 @@
 iptv_main() {
 
     unset INPUT
-    type fzf &>/dev/null
-    if [[ $? != 0 ]]; then
-        error "fzf required"
-    fi
-
     iptv_load
 
     selected=$(cat "$channels_file" | sed 's/ [^ ]*$//' | fzf --header='CTRL-c or ESC to quit' )
