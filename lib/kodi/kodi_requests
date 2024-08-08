@@ -59,9 +59,6 @@ function kodi_volume() {
 }
 function kodi_volamp() {
     VOLUME="${INPUT//[!0-9]/}"
-    # if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
-        
-    # fi
     if [[ -z ${VOLUME_AMP_STEPS+x} ]]; then    
         VOLUME_AMP_STEPS=5
     fi

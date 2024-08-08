@@ -29,7 +29,7 @@ Offering the following features
    * `fzf`              required for iptv interface (optional) - https://github.com/junegunn/fzf
    * `python-twisted`   to enable local file sharing and MPEG-DASH support (optional). Environment variables: TWISTED_PATH - Path to python-twisted webserver
    * `PhantomJS`        Scriptable Headless Browser (optional)
-4. Edit config file $HOME/.config/send_to_kodi/.sendtokodi to customize default settings:
+4. Edit config file $HOME/.config/send_to_kodi/config to customize default settings:
 
    ```bash
    #!/usr/bin/env bash
