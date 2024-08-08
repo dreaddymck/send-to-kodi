@@ -45,8 +45,17 @@ Offering the following features
    RESOLUTION_JSON='[
       {"res":"360", "value" : ["twitch.tv","youtube.com"]}
    ]'
-   #display available formats
+   VOLUME_AMP_STEPS=10 #volume amplification steps up/down
+   VERBOSE=0 # display debug activities 0/1
    LISTFORMATS=0
+   MODE="default" #values: default/stream
+
+   #For DLRZ (download/resize to local/ssh storage)
+   REMOTE_SSH=""
+   # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
+   DESTINATION_PATH="/mnt/d/Videos/playlist/"
+   RHEIGHT="360"
+   PWD=$(pwd)
    ```
 5. Run it from the command line:
 
@@ -74,29 +83,39 @@ Offering the following features
    -v                     display git version and last log entry
    ```
 8. Commands:
-
+   
+   MAIN interface
+    
    ```text
    help                   display this help menu
-   stop                   stop kodi playback
+   stop|halt              stop kodi playback
    next                   next kodi playback
    previous|prev          previous kodi playback
-   volume|vol 100         set volume 100%
+   volume|vol 100         set volume 0-100%
+   volamp|amp 0|1         increase/decrease volume amplification
    pause                  PlayPause toggle
    shutdown
    reboot
-   active                 display Kodi active playlist id
    version                display git version and last log entry
    exit|quit
    iptv                   load iptv interface (work in progress)
-   dlrz                   option to download and resize via ffmpeg.
+   dlrz|dl|rz             switch to download/resize to storage mode.
    ```
-9. Ad custom commands to the following script: $HOME/.config/send_to_kodi/send_to_kodi_commands
+   
+   DOWNLOAD / RESIZE interface
+
+   ```text  
+   home|main              back to main interface
+   clean                  delete all media from destination folder.
+   list                   list all media in destination folder.
+   ```
+9. Add custom commands to the following script: $HOME/.config/send_to_kodi/send_to_kodi_commands
 
    ```bash
+   # example triggering command
    if [[ "$INPUT" =~ ^(command)$ ]]; then
        unset INPUT #important
-       your-custom-command
-       kodi_main #back to send-to-kodi.sh prompt
+       your-custom-function
    fi
    ```
 10. IPTV FZF search syntax:
@@ -109,7 +128,6 @@ Offering the following features
     !^music      inverse-prefix-exact-match	    Items that do not start with music
     !.mp3$       inverse-suffix-exact-match	    Items that do not end with .mp3
     ```
-
-11. Note: Gracefully exit the iptv interface with `ctrl+c` or use an an invalid search then select the empty field.
+    Note: Gracefully exit the iptv interface with `ctrl+c` or use an an invalid search term then select the empty field.
 
 

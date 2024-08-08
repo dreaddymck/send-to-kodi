@@ -48,28 +48,40 @@ function kodi_get_active() {
     fi
     # echo "Player id: $active_player"
 }
-function kodi_volume(){
+function kodi_volume() {
     VOLUME="${INPUT//[!0-9]/}"
-    if [[ $VOLUME ]] && [[ $VOLUME -ge 0 ]] && [[ $VOLUME -le 100 ]];
-    then
+    if [[ $VOLUME ]] && [[ $VOLUME -ge 0 ]] && [[ $VOLUME -le 100 ]]; then
         if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
             echo "Request volume: $VOLUME%" >&2
         fi
         kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$VOLUME"'}}'
     fi
 }
-function kodi_volamp(){
+function kodi_volamp() {
     VOLUME="${INPUT//[!0-9]/}"
-    if [[ $VOLUME ]] && [[ $VOLUME -ge 0 ]] && [[ $VOLUME -le 100 ]];
-    then
-        if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
-            echo "Request volume: $VOLUME%" >&2
-        fi
-        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$VOLUME"'}}'
+    # if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+        
+    # fi
+    if [[ -z ${VOLUME_AMP_STEPS+x} ]]; then    
+        VOLUME_AMP_STEPS=5
     fi
-
-    # kodi_request '{"method":"Input.ExecuteAction","params":{"action":"volampup"}}' # --> raise volume amplification +1
-    # kodi_request '{"method":"Input.ExecuteAction","params":{"action":"volampdown"}}' # --> lower volume amplification -1    
+    if [[ $VOLUME ]]; then
+        x=0
+        if [[ $VOLUME -gt 0 ]]; then
+            echo "Request volume amplification up" >&2
+            while [[ $x -lt $VOLUME_AMP_STEPS ]]; do
+                kodi_request '{"jsonrpc": "2.0","method":"Input.ExecuteAction","params":{"action":"volampup"}}' # --> raise volume amplification +1
+                x=$(( x + 1 ))
+            done
+        elif [[ $VOLUME -eq 0 ]]; then
+        echo "Request volume amplification down" >&2
+            while [[ $x -lt $VOLUME_AMP_STEPS ]]; do
+                kodi_request '{"jsonrpc": "2.0","method":"Input.ExecuteAction","params":{"action":"volampdown"}}' # --> lower volume amplification -1
+                x=$(( x + 1 ))
+            done
+        fi
+    fi
+    unset INPUT
 }
 function kodi_shutdown() {
     if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
@@ -83,8 +95,8 @@ function kodi_reboot() {
     fi
     kodi_request '{"jsonrpc": "2.0", "method": "System.Reboot"}'
 }
-function kodi_request(){
-    response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1"  "http://$REMOTE/jsonrpc" 2>/dev/null)"
+function kodi_request() {
+    response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1" "http://$REMOTE/jsonrpc" 2>/dev/null)"
     if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "REQUEST: $1" >&2
         echo "RESPONSE: $response" >&2

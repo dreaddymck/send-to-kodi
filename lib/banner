@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+function send_to_kodi_banner() {
+    clear
+    echo "$SEND_TO_KODI_LOGO_ASCII"
+    date
+    echo "PID: $$"
+    echo "Kodi: $REMOTE"
+    echo "Local: $HOST_NAME"
+}
+
+function ytdl_dlrz_banner() {
+    clear
+    echo "$DOWNLOAD_LOGO_ASCII"
+    date
+    echo "PID: $$"
+    echo "host: $REMOTE_SSH"
+    echo "destination: $DESTINATION_PATH"
+    echo "current: $PWD"
+}

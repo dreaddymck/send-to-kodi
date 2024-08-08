@@ -43,7 +43,7 @@ function ytdl_dlrz_main() {
 }
 function ytdl_dlrz_read() {
 
-    read -r -e -d $'\n' -p 'DOWNLOAD/RESIZE[url/cmd]: ' INPUT
+    read -r -e -d $'\n' -p 'DOWNLOAD / RESIZE [url/cmd]: ' INPUT
     if [[ -z $INPUT ]]; then
         ytdl_dlrz_read
     fi
@@ -56,40 +56,28 @@ function ytdl_dlrz_read() {
 }
 function ytdl_dlrz_cmd() {
 
-    if [[ "$1" =~ ^(help)$ ]]; then
-        ytdl_dlrz_help
-        ytdl_dlrz_read
-    fi
     if [[ "$1" =~ ^(list)$ ]]; then
+        unset INPUT
         ytdl_dlrz_list
         ytdl_dlrz_read
     fi
     if [[ "$1" =~ ^(clean)$ ]]; then
+        unset INPUT
         ytdl_dlrz_clean
         ytdl_dlrz_read
     fi
     if [[ "$1" =~ ^(home|main)$ ]]; then
         unset INPUT
+        send_to_kodi_banner
         kodi_main
     fi
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
-        # ytdl_dlrz_read
     fi    
     if [[ -z $INPUT ]]; then
         unset INPUT
         ytdl_dlrz_read
     fi        
-}
-function ytdl_dlrz_banner() {
-
-    date
-    cd "$PWD" || exit
-    echo "host: $REMOTE_SSH"
-    echo "destination: $DESTINATION_PATH"
-    echo "local: $PWD"
-    echo "height: $RHEIGHT"
-
 }
 function ytdl_dlrz_clean() {
 
@@ -111,14 +99,9 @@ function ytdl_dlrz_list() {
     fi
 
 }
-function ytdl_dlrz_help() {
-    echo "cmd: list, clean, help, home"
-}
-
 function ytdl_dlrz() {
 
     ytdl_dlrz_banner
-    ytdl_dlrz_help
     if [ $# -eq 0 ]; then
         ytdl_dlrz_read
     fi
