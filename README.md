@@ -48,7 +48,7 @@ Provides the following services
    RESOLUTION_JSON='[
       {"res":"360", "value" : ["twitch.tv","youtube.com"]}
    ]' # resolution height priority per domain.
-   VOLUME_AMP_STEPS=10 #volume amplification steps up/down
+   VOLUME_AMP_STEPS=5 #volume amplification steps up/down default 5
    LISTFORMATS=0
    MODE="default" #values: default/stream
 
