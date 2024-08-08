@@ -6,7 +6,7 @@ function kodi_main() {
 
     set -o history
 
-    if [ -z $INPUT ]; then
+    if [ -z "$INPUT" ]; then
 
         read -r -e -d $'\n' -p 'SEND TO KODI [url/path/cmd]: ' INPUT
 
@@ -16,12 +16,10 @@ function kodi_main() {
         fi
         if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
             unset INPUT
-            clear
             ytdl_dlrz
         fi     
         if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
             source "$SEND_TO_KODI_DIR/lib/commands"
-            # kodi_main
         fi 
         if [[ -z $INPUT ]]; then
             unset INPUT
@@ -119,6 +117,9 @@ function kodi_main() {
             fi
         fi
 
+
+        # Honestly not sure what to do with this.
+
         dash='^[^?]*\.mpd(\?|$)'
 
         # echo "Looking for best video..." >&2
@@ -164,16 +165,7 @@ function kodi_main() {
 
     kodi_get_active
 
-    # if [[ $active_player == *'"type":"video"'* ]]; then
-    if [[ -n $active_player ]]; then
-        echo "Queueing" >&2
-        kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":0}'
-    else
-        echo "Playing" >&2
-        kodi_request '[{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}},
-{"jsonrpc":"2.0","id":0,"method":"Playlist.Add","params":{"playlistid":0,"item":{"file":"'"$url"'"}}},
-{"jsonrpc":"2.0","id":0,"method":"Player.Open","params":{"item":{"playlistid":0,"position":0}}}]'
-    fi
+    kodi_send
 
     history -s "$INPUT"
 

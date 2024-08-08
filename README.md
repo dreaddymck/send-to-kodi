@@ -33,7 +33,7 @@ Offering the following features
 
    ```bash
    #!/usr/bin/env bash
-   GUI=0
+   VERBOSE=0 # display debug activities 0/1
    DOWNLOAD_DIR=.
    KODI_YOUTUBE=0
    SEND_RAW=0
@@ -46,7 +46,6 @@ Offering the following features
       {"res":"360", "value" : ["twitch.tv","youtube.com"]}
    ]' # resolution height priority per domain.
    VOLUME_AMP_STEPS=10 #volume amplification steps up/down
-   VERBOSE=0 # display debug activities 0/1
    LISTFORMATS=0
    MODE="default" #values: default/stream
 
