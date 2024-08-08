@@ -1,15 +1,16 @@
 # Send to Kodi DMCK
 
-Two github projects combined.
+Github projects forked and merged into this abomination.
 
 * https://github.com/allejok96/send-to-kodi
 * https://github.com/shahin8r/iptv
 
-Offering the following features
+Provides the following services
 
 * Send compatible yt-dlp/youtube-dl streams to Kodi.
 * Send compatible local media to Kodi.
-* MPEG-DASH (high quality video) support.
+* Download/Resize mp4 to local or ssh storage
+* MPEG-DASH (high quality video) support - (__Work In Progress__)
 * IPTV m3u playlist interface, send iptv to kodi (__Work In Progress__)
 
 *Note: Kodi add-ons may be required for proprietory media streams.*
@@ -21,6 +22,7 @@ Offering the following features
 
    * `InputStream.Adaptive` to enable MPEG-DASH support.
    * *Kodi add-ons* for proprietory media support.
+
 3. Install to your Linux environment:
 
    * `yt-dlp`           to add support for hundreds of video sites.
@@ -29,6 +31,7 @@ Offering the following features
    * `fzf`              required for iptv interface - https://github.com/junegunn/fzf
    * `python-twisted`   to enable local file sharing and MPEG-DASH support (optional). Environment variables: TWISTED_PATH - Path to python-twisted webserver
    * `PhantomJS`        Scriptable Headless Browser (optional)
+
 4. Edit config file $HOME/.config/send_to_kodi/config to customize default settings:
 
    ```bash
@@ -56,11 +59,13 @@ Offering the following features
    RHEIGHT="360"
  
    ```
+
 5. Run it from the command line:
 
    ```bash
    ./send-to-kodi.sh -r kodibox:8080 -u user:pass https://vimeo.com/174312494
    ```
+
 6. Edit `send-to-kodi.desktop` add your credentials then copy it to your user folder (optional):
 
    ```bash
@@ -69,6 +74,7 @@ Offering the following features
    cp send-to-kodi.sh ~/.local/bin/send-to-kodi
    cp send-to-kodi.desktop ~/.local/share/applications/
    ```
+
 7. Options:
 
    ```text
@@ -81,6 +87,7 @@ Offering the following features
 
    -v                     display git version and last log entry
    ```
+
 8. Commands:
    
    MAIN interface
@@ -108,6 +115,7 @@ Offering the following features
    clean                  delete all media from destination folder.
    list                   list all media in destination folder.
    ```
+
 9. Add custom commands to the following script: $HOME/.config/send_to_kodi/send_to_kodi_commands
 
    ```bash
@@ -117,6 +125,7 @@ Offering the following features
        your-custom-function
    fi
    ```
+
 10. IPTV FZF search syntax:
     ```text
     sbtrkt       fuzzy-match	                Items that match sbtrkt
