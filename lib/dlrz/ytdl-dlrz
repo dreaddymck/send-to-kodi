@@ -8,15 +8,18 @@ function ytdl_dlrz_main() {
 
     if [[ ! $1 =~ $url_pattern ]]; then
         echo "Unsupported[url/cmd]: $1"
+        unset INPUT
         ytdl_dlrz_help
         ytdl_dlrz_read
     fi
+
+    echo "Downloading"
     # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --trim-filenames 50 --user-agent "'$USER_AGENT'" "$1"); then
-    echo "Downloading"
-    if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --user-agent "'$USER_AGENT'" "$1"); then
+    # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --limit-rate 500K --user-agent "'$USER_AGENT'" "$1"); then
+    if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate 500K --progress --user-agent "'$USER_AGENT'" "$1"); then
 
-        echo "yt-dlp failed: $err"
+        echo "Search failed: $err"
         ytdl_dlrz_read
     fi
     for i in *.mp4; do
@@ -72,7 +75,7 @@ function ytdl_dlrz_cmd() {
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
         # ytdl_dlrz_read
-    fi
+    fi    
     if [[ -z $INPUT ]]; then
         unset INPUT
         ytdl_dlrz_read

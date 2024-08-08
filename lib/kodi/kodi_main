@@ -26,28 +26,11 @@ function kodi_main() {
         if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
             unset INPUT
             ytdl_dlrz
-        fi
-        ## TODO: use this snippit for config update via interface
-        # if [[ "$INPUT" =~ ^(mode)$ ]] || [[ "$INPUT" =~ ^(mode)(.[a-z]*)$ ]]; then
-        #     input_array=($INPUT)
-        #     unset INPUT
-        #     #update MODE entry in config file
-        #     if [[ ${input_array[1]} =~ ^(url|download|stream)$ ]]; then
-        #         if ! sed -i "s/\(MODE *= *\).*/\1${input_array[1]} \#values\: url\/download\/stream" "$SEND_TO_KODI_CONF"; then
-        #             echo "error updating config entry"
-        #         fi
-        #         MODE=${input_array[1]}
-        #     fi
-        #     echo "Current mode: $MODE"
-        #     kodi_main
-        # fi        
+        fi     
         if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
             source "$SEND_TO_KODI_DIR/lib/commands"
             # kodi_main
-        fi                
-        if [[ -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
-            source "$SEND_TO_KODI_CUSTOM_COMMANDS"
-        fi
+        fi 
         if [[ -z $INPUT ]]; then
             unset INPUT
             kodi_main

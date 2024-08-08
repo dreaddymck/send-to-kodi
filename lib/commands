@@ -33,3 +33,6 @@ if jq -e . >/dev/null 2>&1 <<<"$CMDS"; then #check for valid json
         unset INPUT
     fi
 fi
+if [[ -f "$SEND_TO_KODI_CUSTOM_COMMANDS" ]]; then
+    source "$SEND_TO_KODI_CUSTOM_COMMANDS"
+fi

@@ -58,6 +58,19 @@ function kodi_volume(){
         kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$VOLUME"'}}'
     fi
 }
+function kodi_volamp(){
+    VOLUME="${INPUT//[!0-9]/}"
+    if [[ $VOLUME ]] && [[ $VOLUME -ge 0 ]] && [[ $VOLUME -le 100 ]];
+    then
+        if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+            echo "Request volume: $VOLUME%" >&2
+        fi
+        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$VOLUME"'}}'
+    fi
+
+    # kodi_request '{"method":"Input.ExecuteAction","params":{"action":"volampup"}}' # --> raise volume amplification +1
+    # kodi_request '{"method":"Input.ExecuteAction","params":{"action":"volampdown"}}' # --> lower volume amplification -1    
+}
 function kodi_shutdown() {
     if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "Request shutdown:" >&2
