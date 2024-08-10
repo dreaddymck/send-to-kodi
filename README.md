@@ -57,6 +57,7 @@ Provides the following services
    # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
    DESTINATION_PATH="/mnt/d/Videos/playlist/"
    RHEIGHT="360"
+   LIMIT_RATE="2000K"
  
    ```
 
