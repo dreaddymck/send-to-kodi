@@ -9,22 +9,23 @@ function kodi_main() {
     if [ -z "$INPUT" ]; then
 
         read -r -e -d $'\n' -p 'SENDTOKODI[url/path/cmd]: ' INPUT
-        if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
-            unset INPUT
-            ytdl_dlrz
-        fi     
-        if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
-            source "$SEND_TO_KODI_DIR/lib/commands"
-        fi 
-        if [[ -z $INPUT ]]; then
-            unset INPUT
-            kodi_main
-        fi        
+        
     fi
 
     # trap 'cleanup' EXIT
-    trap cleanup INT TERM
+    trap cleanup INT TERM    
 
+    if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
+        unset INPUT
+        ytdl_dlrz
+    fi     
+    if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
+        source "$SEND_TO_KODI_DIR/lib/commands"
+    fi 
+    if [[ -z $INPUT ]]; then
+        unset INPUT
+        kodi_main
+    fi
     # Don't try to resolve
     if ((SEND_RAW)); then
         url="$INPUT"
@@ -90,7 +91,7 @@ function kodi_main() {
                 while read -r url_item; do
 
                     if [[ "$INPUT" =~ $url_item ]]; then
-                        echo "Searching resolution: $res" >&2
+                        echo "Searching for resolution: $res" >&2
                         if url="$($YTDLP -gf "best[height<=$res]" --user-agent "'$USER_AGENT'" "$INPUT")"; then
                             break
                         fi
@@ -104,7 +105,7 @@ function kodi_main() {
 
             done <<<"$(echo "$RESOLUTION_JSON" | jq -c '.[]')"
         fi
-        if [[ -z $url ]]; then
+        if [[ -z $url ]] && [[ -n $INPUT ]]; then
             echo "Searching" >&2
             if ! url="$($YTDLP -gf b --user-agent "'$USER_AGENT'" "$INPUT")"; then
                 unset INPUT

@@ -54,8 +54,7 @@ Provides the following services
 
    #For DLRZ (download/resize to local/ssh storage)
    REMOTE_SSH=""
-   # DESTINATION_PATH="/media/sda1.vfat/media/Video/playlist/"
-   DESTINATION_PATH="/mnt/d/Videos/playlist/"
+   REMOTE_PATH=""
    RHEIGHT="360"
    LIMIT_RATE="2000K"
  

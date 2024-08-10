@@ -27,15 +27,16 @@ function ytdl_dlrz_main() {
             ffmpeg -i "$i" -vf scale=-2:$RHEIGHT -preset ultrafast "${i%.*}.$RHEIGHT.mp4"
             rm "$i"
         fi
-        if [[ -n $DESTINATION_PATH ]]; then
-            if [[ -n $REMOTE_SSH ]]; then
-                rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RHEIGHT.mp4" "$REMOTE_SSH":"$DESTINATION_PATH"
-                echo "Server Reset"
-                ssh "$REMOTE_SSH" 'sudo service minidlna force-reload'
-            else
-                rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RHEIGHT.mp4" "$DESTINATION_PATH"
-            fi
+        if [[ -n $REMOTE_SSH ]] && [[ -n $REMOTE_PATH ]]; then
+
+            rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RHEIGHT.mp4" "$REMOTE_SSH":"$REMOTE_PATH"
             rm "${i%.*}.$RHEIGHT.mp4"
+
+        elif [[ $DOWNLOAD_DIR -ne $PWD ]]; then
+
+            rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RHEIGHT.mp4" "$DOWNLOAD_DIR"
+            rm "${i%.*}.$RHEIGHT.mp4"
+
         fi
     done
     ytdl_dlrz_list
@@ -84,18 +85,18 @@ function ytdl_dlrz_clean() {
     echo "Cleaning up"
 
     if [[ -n $REMOTE_SSH ]]; then
-        ssh "$REMOTE_SSH" 'rm '$DESTINATION_PATH'*'
+        ssh "$REMOTE_SSH" 'rm '$DOWNLOAD_DIR'*'
     else
-        rm "$DESTINATION_PATH"*
+        rm "$DOWNLOAD_DIR"*
     fi
 }
 
 function ytdl_dlrz_list() {
 
     if [[ -n $REMOTE_SSH ]]; then
-        ssh "$REMOTE_SSH" 'ls -A '$DESTINATION_PATH
+        ssh "$REMOTE_SSH" 'ls -A '$DOWNLOAD_DIR
     else
-        ls -A "$DESTINATION_PATH"
+        ls -A "$DOWNLOAD_DIR"
     fi
 
 }
