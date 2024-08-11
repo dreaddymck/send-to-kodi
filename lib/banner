@@ -17,6 +17,7 @@ function ytdl_dlrz_banner() {
     echo "PID: $$"
     echo "RHEIGHT: $RHEIGHT"
     echo "REMOTE SSH: $REMOTE_SSH"
+    echo "REMOTE PATH: $REMOTE_PATH"
     echo "DOWNLOAD DIR: $DOWNLOAD_DIR"
     echo "LIMIT RATE: $LIMIT_RATE"
     echo "CURRENT: $PWD"
