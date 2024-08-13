@@ -8,7 +8,7 @@ CMDS='[
     {"command":"shutdown", "func":"kodi_shutdown"},
     {"command":"reboot", "func":"kodi_reboot"},
     {"command":"next", "func":"kodi_next"},
-    {"command":"previous|prev", "func":"kodi_prev"},
+    {"command":"previous|prev", "func":"kodi_previous"},
     {"command":"volume|vol)(.[0-9]*", "func":"kodi_volume"},
     {"command":"volamp|amp)(.[0-9]*", "func":"kodi_volamp"},
     {"command":"version", "func":"version"},
