@@ -16,6 +16,9 @@ fi
 if ! type fzf &>/dev/null; then
     msg=${msg}" fzf"
 fi
+if ! type rsync &>/dev/null; then
+    msg=${msg}" rsync"
+fi
 if [[ -n $msg ]]; then
     msg="Missing Requirements:"${msg}
     echo "$msg"

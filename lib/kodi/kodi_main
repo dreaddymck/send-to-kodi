@@ -92,7 +92,7 @@ function kodi_main() {
 
                     if [[ "$INPUT" =~ $url_item ]]; then
                         echo "Searching for resolution: $res" >&2
-                        if url="$($YTDLP -gf "best[height<=$res]" --user-agent "'$USER_AGENT'" "$INPUT")"; then
+                        if url="$($YTDLP -gf "best[height<=$res]" --quiet --progress --user-agent "'$USER_AGENT'" "$INPUT" >&2)"; then
                             break
                         fi
                     fi
@@ -107,7 +107,7 @@ function kodi_main() {
         fi
         if [[ -z $url ]] && [[ -n $INPUT ]]; then
             echo "Searching" >&2
-            if ! url="$($YTDLP -gf b --user-agent "'$USER_AGENT'" "$INPUT")"; then
+            if ! url="$($YTDLP -gf b --quiet --progress --user-agent "'$USER_AGENT'" "$INPUT" >&2)"; then
                 unset INPUT
                 kodi_main
             fi

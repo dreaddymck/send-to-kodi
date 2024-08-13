@@ -112,7 +112,6 @@ Provides the following services
 
    ```text  
    home|main              back to main interface
-   clean                  delete all media from destination folder.
    list                   list all media in destination folder.
    ```
 

@@ -17,14 +17,14 @@ function ytdl_dlrz_main() {
     # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --trim-filenames 50 --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --limit-rate 500K --user-agent "'$USER_AGENT'" "$1"); then
-    if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "'$LIMIT_RATE'" --progress --user-agent "'$USER_AGENT'" "$1"); then
+    if ! err="$($YTDLP -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
 
         echo "Search failed: $err"
         ytdl_dlrz_read
     fi
     for i in *.mp4; do
         if [[ -n $RHEIGHT ]]; then
-            ffmpeg -i "$i" -vf scale=-2:$RHEIGHT -preset ultrafast "${i%.*}.$RHEIGHT.mp4"
+            ffmpeg -i "$i" -vf scale=-2:"$RHEIGHT" -preset ultrafast "${i%.*}.$RHEIGHT.mp4"
             rm "$i"
         fi
         if [[ -n $REMOTE_SSH ]] && [[ -n $REMOTE_PATH ]]; then
@@ -32,7 +32,7 @@ function ytdl_dlrz_main() {
             rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RHEIGHT.mp4" "$REMOTE_SSH":"$REMOTE_PATH"
             rm "${i%.*}.$RHEIGHT.mp4"
 
-        elif [[ $DOWNLOAD_DIR -ne $PWD ]]; then
+        elif [[ ! $DOWNLOAD_DIR =~ ^($PWD)$ ]]; then
 
             rsync -av --progress --inplace --no-group --no-perms --no-owner "${i%.*}.$RHEIGHT.mp4" "$DOWNLOAD_DIR"
             rm "${i%.*}.$RHEIGHT.mp4"
@@ -62,11 +62,6 @@ function ytdl_dlrz_cmd() {
         ytdl_dlrz_list
         ytdl_dlrz_read
     fi
-    if [[ "$1" =~ ^(clean)$ ]]; then
-        unset INPUT
-        ytdl_dlrz_clean
-        ytdl_dlrz_read
-    fi
     if [[ "$1" =~ ^(home|main)$ ]]; then
         unset INPUT
         send_to_kodi_banner
@@ -80,23 +75,14 @@ function ytdl_dlrz_cmd() {
         ytdl_dlrz_read
     fi
 }
-function ytdl_dlrz_clean() {
-
-    echo "Cleaning up"
-
-    if [[ -n $REMOTE_SSH ]]; then
-        ssh "$REMOTE_SSH" 'rm '$DOWNLOAD_DIR'*'
-    else
-        rm "$DOWNLOAD_DIR"*
-    fi
-}
-
 function ytdl_dlrz_list() {
 
     if [[ -n $REMOTE_SSH ]]; then
-        ssh "$REMOTE_SSH" 'ls -A '$DOWNLOAD_DIR
+        # ssh "$REMOTE_SSH" 'ls -A '"$REMOTE_PATH"
+        ssh "$REMOTE_SSH" find "$REMOTE_PATH" -maxdepth 1 -type f -not -path '*/\.*' | sed -r 's/^.+\///' | sort
     else
-        ls -A "$DOWNLOAD_DIR"
+        # ls -A "$DOWNLOAD_DIR"
+        find "$DOWNLOAD_DIR" -maxdepth 1 -type f -not -path '*/\.*' | sed -r 's/^.+\///' | sort
     fi
 
 }
