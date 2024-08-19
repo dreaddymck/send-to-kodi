@@ -3,19 +3,15 @@
 # Show a error dialog or message
 # args: MESSAGE
 function error() {
-
     printf '%s\n' "$1" >&2
-
     exit 1
 }
 # Show a question dialog or prompt
 # args: MESSAGE
 function question() {
-
     printf '%s [y/N] ' "$1" >&2
     read -r
     [[ $REPLY =~ y|Y ]]
-
 }
 # The EXIT trap
 function cleanup() {
@@ -30,4 +26,17 @@ function cleanup() {
     [[ $TWISTED_PID ]] && kill "$TWISTED_PID"
     unset INPUT
     kodi_main
+}
+function list_files() {
+    echo "******************"
+    echo "Directory content:"
+    echo "******************" 
+    if [[ -n $REMOTE_SSH ]]; then
+        # ssh "$REMOTE_SSH" 'ls -A '"$REMOTE_PATH"
+        ssh "$REMOTE_SSH" find "$REMOTE_PATH" -type f -not -path '*/\.*' -printf "%P\n" | sort
+    else
+        # ls -A "$DOWNLOAD_DIR"
+        find "$DOWNLOAD_DIR" -type f -not -path '*/\.*' -printf "%P\n" | sort
+    fi
+
 }

@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 #
 
-function ytdl_dlrz_main() {
+function dlrz_main() {
 
-    # ytdl_dlrz_check_url "$1"
+    # dlrz_check_url "$1"
     local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
 
     if [[ ! $1 =~ $url_pattern ]]; then
         echo "Unsupported[url/cmd]: $1"
         unset INPUT
-        ytdl_dlrz_help
-        ytdl_dlrz_read
+        dlrz_help
+        dlrz_read
     fi
 
     echo "Downloading"
@@ -20,7 +20,7 @@ function ytdl_dlrz_main() {
     if ! err="$($YTDLP -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
 
         echo "Search failed: $err"
-        ytdl_dlrz_read
+        dlrz_read
     fi
     for i in *.mp4; do
         if [[ -n $RHEIGHT ]]; then
@@ -39,28 +39,28 @@ function ytdl_dlrz_main() {
 
         fi
     done
-    ytdl_dlrz_list
-    ytdl_dlrz_read
+    list_files
+    dlrz_read
 }
-function ytdl_dlrz_read() {
+function dlrz_read() {
 
     read -r -e -d $'\n' -p 'DOWNLOAD/RESIZE[url/cmd]: ' INPUT
     if [[ -z $INPUT ]]; then
-        ytdl_dlrz_read
+        dlrz_read
     fi
     if [[ "$INPUT" =~ ^(exit|quit)$ ]]; then
         exit
     fi
-    ytdl_dlrz_cmd "$INPUT"
-    ytdl_dlrz_main "$INPUT"
+    dlrz_cmd "$INPUT"
+    dlrz_main "$INPUT"
 
 }
-function ytdl_dlrz_cmd() {
+function dlrz_cmd() {
 
     if [[ "$1" =~ ^(list)$ ]]; then
         unset INPUT
-        ytdl_dlrz_list
-        ytdl_dlrz_read
+        list_files
+        dlrz_read
     fi
     if [[ "$1" =~ ^(home|main)$ ]]; then
         unset INPUT
@@ -72,27 +72,16 @@ function ytdl_dlrz_cmd() {
     fi
     if [[ -z $INPUT ]]; then
         unset INPUT
-        ytdl_dlrz_read
+        dlrz_read
     fi
-}
-function ytdl_dlrz_list() {
-
-    if [[ -n $REMOTE_SSH ]]; then
-        # ssh "$REMOTE_SSH" 'ls -A '"$REMOTE_PATH"
-        ssh "$REMOTE_SSH" find "$REMOTE_PATH" -type f -not -path '*/\.*' -printf "%P\n" | sort
-    else
-        # ls -A "$DOWNLOAD_DIR"
-        find "$DOWNLOAD_DIR" -type f -not -path '*/\.*' -printf "%P\n" | sort
-    fi
-
 }
 function ytdl_dlrz() {
 
-    ytdl_dlrz_banner
+    dlrz_banner
     if [ $# -eq 0 ]; then
-        ytdl_dlrz_read
+        dlrz_read
     fi
-    ytdl_dlrz_cmd "$@"
-    ytdl_dlrz_main "$@"
+    dlrz_cmd "$@"
+    dlrz_main "$@"
 
 }

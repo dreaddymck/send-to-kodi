@@ -10,7 +10,7 @@ function send_to_kodi_banner() {
     echo "DOWNLOAD DIR: $DOWNLOAD_DIR"
 }
 
-function ytdl_dlrz_banner() {
+function dlrz_banner() {
     clear
     echo "$DOWNLOAD_LOGO_ASCII"
     date
