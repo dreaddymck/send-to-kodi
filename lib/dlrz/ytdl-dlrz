@@ -11,15 +11,9 @@ function dlrz_main() {
         unset INPUT
         dlrz_read
     fi
-
-    echo "Downloading"
     # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --trim-filenames 50 --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --limit-rate 500K --user-agent "'$USER_AGENT'" "$1"); then
-    # if ! err="$($YTDLP -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
-    #     echo "Search failed: $err"
-    #     dlrz_read
-    # fi
     err=""
     res=""
     if jq -e . >/dev/null 2>&1 <<<"$RESOLUTION_JSON"; then
@@ -31,8 +25,7 @@ function dlrz_main() {
             while read -r url_item; do
 
                 if [[ "$INPUT" =~ $url_item ]]; then
-                    echo "Searching for resolution: $res" >&2
-                    # if ! err="$($YTDLP -f "best[height<=$res]" --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
+                    echo "Downloading resolution: $res or best available" >&2
                     if err="$($YTDLP -f "bestvideo[height<=$res][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
                         # echo "break 1"
                         break
@@ -47,22 +40,21 @@ function dlrz_main() {
             fi
 
         done <<<"$(echo "$RESOLUTION_JSON" | jq -c '.[]')"
+    else
+        echo "Downloading best available" >&2
+        if ! err="$($YTDLP -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
+            echo "Search failed: $err"
+            dlrz_read
+        fi
     fi
-    # echo "Error: $err"
-    # if [[ -z $err ]] && [[ -n $INPUT ]]; then
-    #     echo "Searching" >&2
-    #     if ! err="$($YTDLP -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
-    #         echo "Search failed: $err"
-    #         dlrz_read
-    #     fi
-    # fi
+
     for i in *.mp4; do
 
         curr_res="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$i")"
-        echo "$res vs $curr_res" 
         mtitle="$i"
         if [[ -n $res ]]; then
             if [[ ! ${curr_res} =~ $res ]]; then
+                echo "Reszing $curr_res to $res"
                 ffmpeg -i "$i" -vf scale=-2:"$res" -preset ultrafast "${i%.*}.$res.mp4"
                 mtitle="${i%.*}.$res.mp4"
                 rm "$i"
