@@ -9,7 +9,6 @@ function dlrz_main() {
     if [[ ! $1 =~ $url_pattern ]]; then
         echo "Unsupported[url/cmd]: $1"
         unset INPUT
-        dlrz_help
         dlrz_read
     fi
 
@@ -39,7 +38,6 @@ function dlrz_main() {
 
         fi
     done
-    list_files
     dlrz_read
 }
 function dlrz_read() {
