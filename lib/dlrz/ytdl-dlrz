@@ -25,7 +25,7 @@ function dlrz_main() {
             while read -r url_item; do
 
                 if [[ "$INPUT" =~ $url_item ]]; then
-                    echo "Downloading resolution: $res or best available" >&2
+                    echo "Downloading resolution $res or best available" >&2
                     if err="$($YTDLP -f "bestvideo[height<=$res][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
                         # echo "break 1"
                         break
