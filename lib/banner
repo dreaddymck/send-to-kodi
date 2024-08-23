@@ -15,7 +15,6 @@ function dlrz_banner() {
     echo "$DOWNLOAD_LOGO_ASCII"
     date
     echo "PID: $$"
-    echo "RHEIGHT: $RHEIGHT"
     echo "REMOTE SSH: $REMOTE_SSH"
     echo "REMOTE PATH: $REMOTE_PATH"
     echo "DOWNLOAD DIR: $DOWNLOAD_DIR"

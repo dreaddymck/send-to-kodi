@@ -55,7 +55,6 @@ Provides the following services
    #For DLRZ (download/resize to local/ssh storage)
    REMOTE_SSH=""
    REMOTE_PATH=""
-   RHEIGHT="360"
    LIMIT_RATE="2000K"
  
    ```
