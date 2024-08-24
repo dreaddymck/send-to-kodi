@@ -33,6 +33,7 @@ if jq -e . >/dev/null 2>&1 <<<"$CMDS"; then #check for valid json
     
     if [[ -n $func ]]; then
         $func
+        history -s "$INPUT"
         unset INPUT
     fi
 fi
