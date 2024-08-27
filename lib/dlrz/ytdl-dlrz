@@ -26,7 +26,8 @@ function dlrz_main() {
 
                 if [[ "$INPUT" =~ $url_item ]]; then
                     echo "Downloading resolution $res or best available" >&2
-                    if err="$($YTDLP -f "bestvideo[height<=$res][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
+                    # if err="$($YTDLP -f "bestvideo[height<=$res][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
+                    if err="$($YTDLP -S vcodec:h264,res:$res,ext:mp4:m4a --recode mp4 --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
                         # echo "break 1"
                         break
                     fi
@@ -42,34 +43,37 @@ function dlrz_main() {
         done <<<"$(echo "$RESOLUTION_JSON" | jq -c '.[]')"
     else
         echo "Downloading best available" >&2
-        if ! err="$($YTDLP -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
+        # if ! err="$($YTDLP -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
+        if err="$($YTDLP -S res,ext:mp4:m4a --recode mp4 --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
             echo "Search failed: $err"
             dlrz_read
         fi
     fi
 
     for i in *.mp4; do
+        if [[ -f "$i" ]]; then
 
-        curr_res="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$i")"
-        mtitle="$i"
-        if [[ -n $res ]]; then
-            if [[ ! ${curr_res} =~ $res ]]; then
-                echo "Reszing $curr_res to $res"
-                ffmpeg -i "$i" -vf scale=-2:"$res" -preset ultrafast "${i%.*}.$res.mp4"
-                mtitle="${i%.*}.$res.mp4"
-                rm "$i"
+            curr_res="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$i")"
+            mtitle="$i"
+            if [[ -n $res ]]; then
+                if [[ ! ${curr_res} =~ $res ]]; then
+                    echo "Reszing $curr_res to $res"
+                    ffmpeg -i "$i" -vf scale=-2:"$res" -preset ultrafast "${i%.*}.$res.mp4"
+                    mtitle="${i%.*}.$res.mp4"
+                    rm "$i"
+                fi
             fi
-        fi
-        if [[ -n $REMOTE_SSH ]] && [[ -n $REMOTE_PATH ]]; then
+            if [[ -n $REMOTE_SSH ]] && [[ -n $REMOTE_PATH ]]; then
 
-            rsync -av --progress --inplace --no-group --no-perms --no-owner "$mtitle" "$REMOTE_SSH":"$REMOTE_PATH"
-            rm "$mtitle"
+                rsync -av --progress --inplace --no-group --no-perms --no-owner "$mtitle" "$REMOTE_SSH":"$REMOTE_PATH"
+                rm "$mtitle"
 
-        elif [[ ! $DOWNLOAD_DIR =~ ^($PWD)$ ]]; then
+            elif [[ ! $DOWNLOAD_DIR =~ ^($PWD)$ ]]; then
 
-            rsync -av --progress --inplace --no-group --no-perms --no-owner "$mtitle" "$DOWNLOAD_DIR"
-            rm "$mtitle"
+                rsync -av --progress --inplace --no-group --no-perms --no-owner "$mtitle" "$DOWNLOAD_DIR"
+                rm "$mtitle"
 
+            fi
         fi
     done
     dlrz_read
