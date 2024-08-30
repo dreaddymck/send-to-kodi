@@ -8,7 +8,7 @@ function kodi_main() {
 
     if [ -z "$INPUT" ]; then
 
-        read -r -e -d $'\n' -p 'SENDTOKODI[url/path/cmd]: ' INPUT
+        read -r -e -d $'\n' -p '<<SEND-TO-KODI>>[url/path/cmd]: ' INPUT
         
     fi
 

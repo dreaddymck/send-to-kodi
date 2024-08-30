@@ -80,7 +80,7 @@ function dlrz_main() {
 }
 function dlrz_read() {
 
-    read -r -e -d $'\n' -p 'DOWNLOAD/RESIZE[url/cmd]: ' INPUT
+    read -r -e -d $'\n' -p '++DOWNLOAD/RESIZE++[url/cmd]: ' INPUT
     if [[ -z $INPUT ]]; then
         dlrz_read
     fi
