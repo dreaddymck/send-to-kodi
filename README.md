@@ -37,7 +37,7 @@ Provides the following services
    ```bash
    #!/usr/bin/env bash
    VERBOSE=0 # display debug activities 0/1
-   DOWNLOAD_DIR=.
+   DOWNLOAD_DIR=.~/
    KODI_YOUTUBE=0
    SEND_RAW=0
    REMOTE="kodibox:8080"
@@ -45,6 +45,7 @@ Provides the following services
    HOST_NAME="$(hostname -i )"
    SHARE_PORT=8080
    USER_AGENT="Mozilla/5.0 (Android 14; Mobile; rv:68.0) Gecko/68.0 Firefox/128.0"
+   VCODEC="h264"
    RESOLUTION_JSON='[
       {"res":"360", "value" : ["twitch.tv","youtube.com"]}
    ]' # resolution height priority per domain.

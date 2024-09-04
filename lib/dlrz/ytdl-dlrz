@@ -5,34 +5,36 @@ function dlrz_main() {
 
     # dlrz_check_url "$1"
     local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
-    err=""
-    res=""
     if [[ ! $1 =~ $url_pattern ]]; then
         echo "Unsupported[url/cmd]: $1"
         unset INPUT
         dlrz_read
     fi
+    err=""
+    res=""
+    OPT_VCODEC="vcodec"
+    if [[ -n $VCODEC ]]; then
+        OPT_VCODEC="vcodec:$VCODEC"
+    fi    
     # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --limit-rate 500K --user-agent "'$USER_AGENT'" "$1"); then
     # if err="$($YTDLP -f "bestvideo[height<=$res][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
     function dlrz_dl_default(){
         echo "Downloading best available" >&2
-        if ! $YTDLP -S vcodec:h264,res,ext:mp4:m4a --recode mp4 --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2; then
+        if ! $YTDLP -S "$OPT_VCODEC",res,ext:mp4:m4a --recode mp4 --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2; then
             echo "Search failed:"
             dlrz_read
         fi        
     }
     if jq -e . >/dev/null 2>&1 <<<"$RESOLUTION_JSON"; then
         while read -r json_string; do
-            # Remove escape characters
-            clean_json_string=$(echo "$json_string" | jq -r '.')
+            clean_json_string=$(echo "$json_string" | jq -r '.') # Remove escape characters
             res=$(echo "$clean_json_string" | jq -r '.res')
-
             while read -r url_item; do
 
                 if [[ "$INPUT" =~ $url_item ]]; then
                     echo "Downloading resolution $res or best available" >&2
-                    if $YTDLP -S vcodec:h264,res:"$res",ext:mp4:m4a --recode mp4 --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2; then
+                    if $YTDLP -S "$OPT_VCODEC",res:"$res",ext:mp4:m4a --recode mp4 --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2; then
                         err=1
                         break
                     fi
