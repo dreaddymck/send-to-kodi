@@ -3,42 +3,51 @@
 # kodi commands
 function kodi_stop() {
     kodi_get_active
-    if [[ ! -z $active_player ]]; then
-        if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+    if [[ -n $active_player ]]; then
+        if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
             echo "Request stop:" >&2
         fi
-        kodi_request '{"jsonrpc": "2.0", "method":"Player.Stop", "params": { "playerid": '"$active_player"' }, "id":0}'
+        kodi_request '{"jsonrpc": "2.0", "method":"Player.Stop", "params": { "playerid": '"$active_player"' }, "id":1}'
     fi
 }
 function kodi_next() {
     kodi_get_active
-    if [[ ! -z $active_player ]]; then
-        if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+    if [[ -n $active_player ]]; then
+        if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
             echo "Request next:" >&2
         fi
-        kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"next" }, "id":0}'
+        kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"next" }, "id":1}'
     fi
 }
 function kodi_previous() {
     kodi_get_active
-    if [[ ! -z $active_player ]]; then
-        if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+    if [[ -n $active_player ]]; then
+        if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
             echo "Request previous:" >&2
         fi
-        kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"previous" }, "id":0}'
+        kodi_request '{"jsonrpc": "2.0", "method":"Player.GoTo", "params": { "playerid": '"$active_player"', "to":"previous" }, "id":1}'
     fi
 }
 function kodi_pause() {
     kodi_get_active
-    if [[ ! -z $active_player ]]; then
-        if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+    if [[ -n $active_player ]]; then
+        if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
             echo "Request pause:" >&2
         fi
-        kodi_request '{"jsonrpc": "2.0", "method":"Player.PlayPause", "params": { "playerid": '"$active_player"' }, "id":0}'
+        kodi_request '{"jsonrpc": "2.0", "method":"Player.PlayPause", "params": { "playerid": '"$active_player"' }, "id":1}'
+    fi
+}
+function kodi_clear() {
+    kodi_get_active
+    if [[ -n $active_player ]]; then
+        if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+            echo "Request clear playlist:" >&2
+        fi
+        kodi_request '{"jsonrpc": "2.0", "method":"Playlist.Clear", "params": { "playerid": '"$active_player"' }, "id":1}'
     fi
 }
 function kodi_get_active() {
-    kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":0}'
+    kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}'
     [[ $? ]] || error "Failed to send - is Kodi running?"
     unset active_player
     if [[ $response ]]; then
@@ -51,15 +60,15 @@ function kodi_get_active() {
 function kodi_volume() {
     VOLUME="${INPUT//[!0-9]/}"
     if [[ $VOLUME ]] && [[ $VOLUME -ge 0 ]] && [[ $VOLUME -le 100 ]]; then
-        if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+        if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
             echo "Request volume: $VOLUME%" >&2
         fi
-        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":0,"params":{"volume":'"$VOLUME"'}}'
+        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":1,"params":{"volume":'"$VOLUME"'}}'
     fi
 }
 function kodi_volamp() {
     VOLUME="${INPUT//[!0-9]/}"
-    if [[ -z ${VOLUME_AMP_STEPS+x} ]]; then    
+    if [[ -z ${VOLUME_AMP_STEPS+x} ]]; then
         VOLUME_AMP_STEPS=5
     fi
     if [[ $VOLUME ]]; then
@@ -80,20 +89,20 @@ function kodi_volamp() {
     fi
 }
 function kodi_shutdown() {
-    if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+    if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "Request shutdown:" >&2
     fi
     kodi_request '{"jsonrpc": "2.0", "method": "System.Shutdown"}'
 }
 function kodi_reboot() {
-    if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+    if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "Request reboot:" >&2
     fi
     kodi_request '{"jsonrpc": "2.0", "method": "System.Reboot"}'
 }
 function kodi_request() {
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1" "http://$REMOTE/jsonrpc" 2>/dev/null)"
-    if [[ ! -z ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+    if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "REQUEST: $1" >&2
         echo "RESPONSE: $response" >&2
     fi
@@ -104,12 +113,12 @@ function kodi_send(){
     # if [[ $active_player == *'"type":"video"'* ]]; then
     if [[ -n $active_player ]]; then
         echo "Queueing" >&2
-        kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":0}'
+        kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":1}'
     else
         echo "Playing" >&2
         kodi_request '[{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}},
-{"jsonrpc":"2.0","id":0,"method":"Playlist.Add","params":{"playlistid":0,"item":{"file":"'"$url"'"}}},
-{"jsonrpc":"2.0","id":0,"method":"Player.Open","params":{"item":{"playlistid":0,"position":0}}}]'
+{"jsonrpc":"2.0","id":1,"method":"Playlist.Add","params":{"playlistid":0,"item":{"file":"'"$url"'"}}},
+{"jsonrpc":"2.0","id":1,"method":"Player.Open","params":{"item":{"playlistid":0,"position":0}}}]'
     fi
 
 }
