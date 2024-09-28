@@ -38,13 +38,10 @@ function kodi_pause() {
     fi
 }
 function kodi_clear() {
-    kodi_get_active
-    if [[ -n $active_player ]]; then
-        if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
-            echo "Request clear playlist:" >&2
-        fi
-        kodi_request '{"jsonrpc": "2.0", "method":"Playlist.Clear", "params": { "playerid": '"$active_player"' }, "id":1}'
+    if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+        echo "Request clear playlist:" >&2
     fi
+    kodi_request '{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": [1], "id": 1}'
 }
 function kodi_get_active() {
     kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}'
@@ -116,9 +113,9 @@ function kodi_send(){
         kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":1}'
     else
         echo "Playing" >&2
-        kodi_request '[{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}},
-{"jsonrpc":"2.0","id":1,"method":"Playlist.Add","params":{"playlistid":0,"item":{"file":"'"$url"'"}}},
-{"jsonrpc":"2.0","id":1,"method":"Player.Open","params":{"item":{"playlistid":0,"position":0}}}]'
+        kodi_request '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": {"playlistid": 0}, "id": 0},
+{"jsonrpc":"2.0","method":"Playlist.Add","params":{"playlistid":0,"item":{"file":"'"$url"'"}},"id":1},
+{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"playlistid":0,"position":0}},"id":1}]'
     fi
 
 }
