@@ -113,7 +113,7 @@ function kodi_send(){
         kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":1},"id":1}'
     else
         echo "Playing" >&2
-        kodi_request '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": {"playlistid": 0}, "id": 1},
+        kodi_request '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": {"playlistid": 1}, "id": 1},
 {"jsonrpc":"2.0","method":"Playlist.Add","params":{"playlistid":1,"item":{"file":"'"$url"'"}},"id":1},
 {"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"playlistid":1,"position":0}},"id":1}]'
     fi
