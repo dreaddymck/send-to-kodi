@@ -60,7 +60,7 @@ function kodi_volume() {
         if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
             echo "Request volume: $VOLUME%" >&2
         fi
-        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","id":1,"params":{"volume":'"$VOLUME"'}}'
+        kodi_request '{"jsonrpc":"2.0","method":"Application.SetVolume","params":{"volume":'"$VOLUME"'},"id":1}'
     fi
 }
 function kodi_volamp() {
@@ -110,12 +110,12 @@ function kodi_send(){
     # if [[ $active_player == *'"type":"video"'* ]]; then
     if [[ -n $active_player ]]; then
         echo "Queueing" >&2
-        kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":0},"id":1}'
+        kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"item":{"file":"'"$url"'"},"playlistid":1},"id":1}'
     else
         echo "Playing" >&2
-        kodi_request '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": {"playlistid": 0}, "id": 0},
-{"jsonrpc":"2.0","method":"Playlist.Add","params":{"playlistid":0,"item":{"file":"'"$url"'"}},"id":1},
-{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"playlistid":0,"position":0}},"id":1}]'
+        kodi_request '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": {"playlistid": 0}, "id": 1},
+{"jsonrpc":"2.0","method":"Playlist.Add","params":{"playlistid":1,"item":{"file":"'"$url"'"}},"id":1},
+{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"playlistid":1,"position":0}},"id":1}]'
     fi
 
 }

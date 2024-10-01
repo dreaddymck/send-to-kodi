@@ -2,7 +2,7 @@
 
 YTDLP="$(which yt-dlp)"
 SEND_TO_KODI_HOME="$HOME/.config/send_to_kodi"
-SEND_TO_KODI_CONF="$SEND_TO_KODI_HOME/config"
+SEND_TO_KODI_CONF="$HOME/.config/send_to_kodi/config"
 SEND_TO_KODI_CUSTOM_COMMANDS="$HOME/.config/send_to_kodi/commands"
 
 source "$SEND_TO_KODI_DIR/config-fix"
@@ -83,4 +83,4 @@ mkdir -p "$config_path"
 #     fi
 #     echo "Current mode: $MODE"
 #     kodi_main
-# fi   
+# fi
