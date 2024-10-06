@@ -21,7 +21,7 @@ source "$SEND_TO_KODI_DIR/lib/start"
 
 [[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
 if [ ! -d "$DOWNLOAD_DIR" ]; then
-    error "Invalid download directory, update DOWNLOAD_DIR in $SEND_TO_KODI_CONF."
+    echo "Invalid download directory, update DOWNLOAD_DIR in $SEND_TO_KODI_CONF."
 fi
 
 

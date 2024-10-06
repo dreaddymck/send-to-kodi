@@ -15,7 +15,7 @@ function dlrz_main() {
     OPT_VCODEC="vcodec"
     if [[ -n $VCODEC ]]; then
         OPT_VCODEC="vcodec:$VCODEC"
-    fi    
+    fi
     # if ! err=$(yt-dlp -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --progress --user-agent "'$USER_AGENT'" "$1"); then
     # if ! err=$(yt-dlp -S res,ext:mp4:m4a --recode mp4 --limit-rate 500K --user-agent "'$USER_AGENT'" "$1"); then
     # if err="$($YTDLP -f "bestvideo[height<=$res][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2)"; then
@@ -24,7 +24,7 @@ function dlrz_main() {
         if ! $YTDLP -S "$OPT_VCODEC",res,ext:mp4:m4a --recode mp4 --limit-rate "$LIMIT_RATE" --quiet --progress --user-agent "'$USER_AGENT'" "$1" >&2; then
             echo "Search failed:"
             dlrz_read
-        fi        
+        fi
     }
     if jq -e . >/dev/null 2>&1 <<<"$RESOLUTION_JSON"; then
         while read -r json_string; do
@@ -52,7 +52,7 @@ function dlrz_main() {
             dlrz_dl_default "$@"
         fi
     else
-        dlrz_dl_default "$@"     
+        dlrz_dl_default "$@"
     fi
 
     for i in *.mp4; do
@@ -117,6 +117,11 @@ function dlrz_cmd() {
     fi
 }
 function ytdl_dlrz() {
+
+    if [ ! -d "$DOWNLOAD_DIR" ]; then
+        echo "Invalid download directory, update DOWNLOAD_DIR in $SEND_TO_KODI_CONF."
+        kodi_main
+    fi
 
     dlrz_banner
     if [ $# -eq 0 ]; then
