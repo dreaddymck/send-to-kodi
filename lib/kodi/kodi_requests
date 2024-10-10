@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+response=""
 # kodi commands
 function kodi_stop() {
     kodi_get_active
@@ -100,8 +101,10 @@ function kodi_reboot() {
 function kodi_request() {
     response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1" "http://$REMOTE/jsonrpc" 2>/dev/null)"
     if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
-        echo "REQUEST: $1" >&2
-        echo "RESPONSE: $response" >&2
+        echo "REQUEST:" >&2
+        jq <<< "$1" >&2
+        echo "RESPONSE:" >&2
+        jq <<< "$response" >&2
     fi
     ! [[ $response =~ '"error":' ]] || error "$response"
 }
