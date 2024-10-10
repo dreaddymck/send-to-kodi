@@ -16,7 +16,7 @@ source "$SEND_TO_KODI_DIR/lib/dlrz/ytdl-dlrz"
 source "$SEND_TO_KODI_DIR/lib/iptv/iptv_channels"
 source "$SEND_TO_KODI_DIR/lib/iptv/iptv_main"
 source "$SEND_TO_KODI_DIR/lib/kodi/kodi_requests"
-source "$SEND_TO_KODI_DIR/lib/kodi/kodi_main"
+source "$SEND_TO_KODI_DIR/lib/main"
 source "$SEND_TO_KODI_DIR/lib/start"
 
 [[ $REMOTE ]] || error "Kodi remote address NOT specified, see --help"
@@ -30,4 +30,4 @@ send_to_kodi_banner
 HISTFILE=$HOME/.config/send_to_kodi/.send_to_kodi_history
 HISTCONTROL=ignoreboth
 shopt -s histappend
-kodi_main
+main

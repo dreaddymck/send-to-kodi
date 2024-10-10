@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function kodi_main() {
+function main() {
 
     unset url
 
@@ -9,22 +9,22 @@ function kodi_main() {
     if [ -z "$INPUT" ]; then
 
         read -r -e -d $'\n' -p '<<SEND-TO-KODI>>[url/path/cmd]: ' INPUT
-        
+
     fi
 
     # trap 'cleanup' EXIT
-    trap cleanup INT TERM    
+    trap cleanup INT TERM
 
     if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
         unset INPUT
         ytdl_dlrz
-    fi     
+    fi
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
-    fi 
+    fi
     if [[ -z $INPUT ]]; then
         unset INPUT
-        kodi_main
+        main
     fi
     # Don't try to resolve
     if ((SEND_RAW)); then
@@ -109,7 +109,7 @@ function kodi_main() {
             echo "Searching" >&2
             if ! url="$($YTDLP -gf b --user-agent "'$USER_AGENT'" "$INPUT")"; then
                 unset INPUT
-                kodi_main
+                main
             fi
         fi
 
@@ -155,7 +155,7 @@ function kodi_main() {
 
     fi
 
-    check_url "$url"  
+    check_url "$url"
     kodi_send
     history -s "$INPUT"
     unset INPUT
@@ -166,5 +166,5 @@ function kodi_main() {
         wait
     fi
 
-    kodi_main
+    main
 }

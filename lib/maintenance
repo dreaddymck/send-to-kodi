@@ -25,12 +25,12 @@ function cleanup() {
     fi
     [[ $TWISTED_PID ]] && kill "$TWISTED_PID"
     unset INPUT
-    kodi_main
+    main
 }
 function list_files() {
     echo "******************"
     echo "Directory content:"
-    echo "******************" 
+    echo "******************"
     if [[ -n $REMOTE_SSH ]]; then
         # ssh "$REMOTE_SSH" 'ls -A '"$REMOTE_PATH"
         ssh "$REMOTE_SSH" find "$REMOTE_PATH" -type f -not -path '*/\.*' -printf "%P\n" | sort

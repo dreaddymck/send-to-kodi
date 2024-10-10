@@ -14,11 +14,11 @@ iptv_main() {
         selected_channel_name=$(echo "$selected_channel_line" | sed 's/\(.*\) url:.*/\1/')
 
         check_url "$selected_channel_url"
-        
+
         printf "Sending: %s\n" "$selected_channel_name"
         INPUT="$selected_channel_url"
         unset selected
-        kodi_main
-    fi    
-    
+        main
+    fi
+
 }

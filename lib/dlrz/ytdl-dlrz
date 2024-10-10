@@ -106,7 +106,7 @@ function dlrz_cmd() {
     if [[ "$1" =~ ^(home|main)$ ]]; then
         unset INPUT
         send_to_kodi_banner
-        kodi_main
+        main
     fi
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
@@ -120,7 +120,7 @@ function ytdl_dlrz() {
 
     if [ ! -d "$DOWNLOAD_DIR" ]; then
         echo "Invalid download directory, update DOWNLOAD_DIR in $SEND_TO_KODI_CONF."
-        kodi_main
+        main
     fi
 
     dlrz_banner

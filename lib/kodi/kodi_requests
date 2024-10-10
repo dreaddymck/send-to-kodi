@@ -145,6 +145,6 @@ function check_url() {
     if [[ ! $input_string =~ $url_pattern ]]; then
         echo "Unsupported[url/path/cmd]: $input_string"
         unset INPUT
-        kodi_main
+        main
     fi
 }
