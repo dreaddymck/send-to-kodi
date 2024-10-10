@@ -42,7 +42,7 @@ function kodi_clear() {
     if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "Request clear playlist:" >&2
     fi
-    kodi_request '{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": [1], "id": 1}'
+    kodi_request '{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": {"playlistid": 1}, "id": 1}'
 }
 function kodi_get_active() {
     kodi_request '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id":1}'
@@ -121,6 +121,19 @@ function kodi_send(){
 {"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"playlistid":1,"position":0}},"id":1}]'
     fi
 
+}
+function kodi_dir(){
+    kodi_request '{"jsonrpc":"2.0","method":"Files.GetDirectory","params":{"directory":"'"$input"'"},"id": 1}'
+    clean_json_string=$(echo "$json_string" | jq -r '.')
+
+    while read -r json_string; do
+        # Remove escape characters
+        clean_json_string=$(echo "$json_string" | jq -r '.files[]')
+        while read -r file; do
+            kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"playlistid":1,"item":{"file":"'"$file"'"}},"id":1}'
+        done <<<"$(echo "$clean_json_string" | jq -r '.file')"
+    done <<<"$(echo "$response" | jq -c '.result')"
+    kodi_request '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"position":0,"playlistid":1},"options":{}},"id":1}'
 }
 function check_url() {
     # Get the input string
