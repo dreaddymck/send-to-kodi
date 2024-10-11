@@ -156,7 +156,7 @@ function main() {
     fi
 
     check_url "$url"
-    kodi_send
+    kodi_send_url
     history -s "$INPUT"
     unset INPUT
 

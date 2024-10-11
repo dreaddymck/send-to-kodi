@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 
 response=""
-# kodi commands
+active_player=""
+
+function kodi_request() {
+    response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1" "http://$REMOTE/jsonrpc" 2>/dev/null)"
+    if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
+        echo "REQUEST:" >&2
+        jq <<< "$1" >&2
+        echo "RESPONSE:" >&2
+        jq <<< "$response" >&2
+    fi
+    ! [[ $response =~ '"error":' ]] || error "$response"
+}
 function kodi_stop() {
     kodi_get_active
     if [[ -n $active_player ]]; then
@@ -53,7 +64,6 @@ function kodi_get_active() {
         # active_player=$(echo "$response" | jq -c '.result[] | select(.type | contains("video")).playerid')
         active_player=$(echo "$response" | jq -c '.result[] | select(.type).playerid')
     fi
-    # echo "Player id: $active_player"
 }
 function kodi_volume() {
     VOLUME="${INPUT//[!0-9]/}"
@@ -98,17 +108,17 @@ function kodi_reboot() {
     fi
     kodi_request '{"jsonrpc": "2.0", "method": "System.Reboot"}'
 }
-function kodi_request() {
-    response="$(curl -X POST -H 'Content-Type: application/json' ${LOGIN:+--user "$LOGIN"} -d "$1" "http://$REMOTE/jsonrpc" 2>/dev/null)"
-    if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
-        echo "REQUEST:" >&2
-        jq <<< "$1" >&2
-        echo "RESPONSE:" >&2
-        jq <<< "$response" >&2
+function check_url() {
+    local input_string=$1
+    local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
+
+    if [[ ! $input_string =~ $url_pattern ]]; then
+        echo "Unsupported[url/path/cmd]: $input_string"
+        unset INPUT
+        main
     fi
-    ! [[ $response =~ '"error":' ]] || error "$response"
 }
-function kodi_send(){
+function kodi_send_url(){
     kodi_get_active
     # if [[ $active_player == *'"type":"video"'* ]]; then
     if [[ -n $active_player ]]; then
@@ -122,9 +132,8 @@ function kodi_send(){
     fi
 
 }
-function kodi_dir(){
-    kodi_request '{"jsonrpc":"2.0","method":"Files.GetDirectory","params":{"directory":"'"$input"'"},"id": 1}'
-    clean_json_string=$(echo "$json_string" | jq -r '.')
+function kodi_send_dir(){
+    kodi_request '{"jsonrpc":"2.0","method":"Files.GetDirectory","params":{"directory":"'"$1"'"},"id": 1}'
 
     while read -r json_string; do
         # Remove escape characters
@@ -133,18 +142,47 @@ function kodi_dir(){
             kodi_request '{"jsonrpc":"2.0","method":"Playlist.Add","params":{"playlistid":1,"item":{"file":"'"$file"'"}},"id":1}'
         done <<<"$(echo "$clean_json_string" | jq -r '.file')"
     done <<<"$(echo "$response" | jq -c '.result')"
+
     kodi_request '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"position":0,"playlistid":1},"options":{}},"id":1}'
 }
-function check_url() {
-    # Get the input string
-    local input_string=$1
 
-    # Use regex pattern to check if the string matches the supported URL protocol and format
-    local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
-
-    if [[ ! $input_string =~ $url_pattern ]]; then
-        echo "Unsupported[url/path/cmd]: $input_string"
-        unset INPUT
-        main
-    fi
+function kodi_list_dir(){
+    kodi_request '{"jsonrpc":"2.0","method":"Files.GetDirectory","params":{"directory":"'"$1"'"},"id": 1}'
+    while read -r json_string; do
+        clean_json_string=$(echo "$json_string" | jq -r '.files[]')
+        while read -r label; do
+            echo "$label" >&2
+        done <<<"$(echo "$clean_json_string" | jq -r '.label')"
+    done <<<"$(echo "$response" | jq -c '.result')"
 }
+
+# curl 'http://192.168.0.201:8080/jsonrpc?Playlist.GetItems' \
+#   -H 'Accept: text/plain, */*; q=0.01' \
+#   -H 'Accept-Language: en-US,en;q=0.9' \
+#   -H 'Authorization: Basic a29kaTprb2Rp' \
+#   -H 'Connection: keep-alive' \
+#   -H 'Content-Type: application/json' \
+#   -H 'DNT: 1' \
+#   -H 'Origin: http://192.168.0.201:8080' \
+#   -H 'Referer: http://192.168.0.201:8080/' \
+#   -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36' \
+#   -H 'X-Requested-With: XMLHttpRequest' \
+#   --data-raw '[{"jsonrpc":"2.0","method":"Playlist.GetItems","params":[1,["title"]],"id":809}]' \
+#   --insecure
+
+
+#   [{"id":809,"jsonrpc":"2.0","result":{"items":[{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"},{"label":"KodiTP01","title":"","type":"unknown"}],"limits":{"end":14,"start":0,"total":14}}}]
+
+#  curl 'http://192.168.0.201:8080/jsonrpc?Playlist.Insert' \
+#   -H 'Accept: text/plain, */*; q=0.01' \
+#   -H 'Accept-Language: en-US,en;q=0.9' \
+#   -H 'Authorization: Basic a29kaTprb2Rp' \
+#   -H 'Connection: keep-alive' \
+#   -H 'Content-Type: application/json' \
+#   -H 'DNT: 1' \
+#   -H 'Origin: http://192.168.0.201:8080' \
+#   -H 'Referer: http://192.168.0.201:8080/' \
+#   -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36' \
+#   -H 'X-Requested-With: XMLHttpRequest' \
+#   --data-raw '[{"jsonrpc":"2.0","method":"Playlist.Insert","params":[1,14,{"file":"upnp://61e0d9b2-9fb0-1007-22e6-8f1a201d1e5a/RDpcVmlkZW9zXHBsYXlsaXN0XExvdmUuRGVhdGguQW5kLlJvYm90cy5TMDEuQ09NUExFVEUuNzIwcC5XRUIueDI2NC1HYWxheHlUVltUR3hdXExvdmUuRGVhdGguQW5kLlJvYm90cy5TMDFFMTguNzIwcC5XRUIueDI2NC1HYWxheHlUVi4zNjAubXA0/"}],"id":810}]' \
+#   --insecure
