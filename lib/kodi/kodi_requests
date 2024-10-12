@@ -155,7 +155,12 @@ function kodi_list_dir(){
         done <<<"$(echo "$clean_json_string" | jq -r '.label')"
     done <<<"$(echo "$response" | jq -c '.result')"
 }
-
+function kodi_toggle_addons_on(){
+    kodi_request '{"jsonrpc": "2.0", "method": "Addons.SetAddonEnabled", "params": {"addonid": "'"$1"'", "enabled": true}, "id": 1}'
+}
+function kodi_toggle_addons_off(){
+    kodi_request '{"jsonrpc": "2.0", "method": "Addons.SetAddonEnabled", "params": {"addonid": "'"$1"'", "enabled": false}, "id": 1}'
+}
 # curl 'http://192.168.0.201:8080/jsonrpc?Playlist.GetItems' \
 #   -H 'Accept: text/plain, */*; q=0.01' \
 #   -H 'Accept-Language: en-US,en;q=0.9' \

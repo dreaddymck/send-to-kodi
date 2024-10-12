@@ -14,17 +14,17 @@ function main() {
 
     # trap 'cleanup' EXIT
     trap cleanup INT TERM
-
+    if [[ -z $INPUT ]]; then
+        unset INPUT
+        main
+    fi
     if [[ "$INPUT" =~ ^(dlrz|dl|rz)$ ]]; then
+        history -s "$INPUT"
         unset INPUT
         ytdl_dlrz
     fi
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
-    fi
-    if [[ -z $INPUT ]]; then
-        unset INPUT
-        main
     fi
     # Don't try to resolve
     if ((SEND_RAW)); then
@@ -38,6 +38,12 @@ function main() {
     # Other protocols
     elif ! [[ $INPUT =~ ^https?:// ]]; then
         url="$INPUT"
+    # Other protocols
+    elif ! [[ $INPUT =~ ^upnp?:// ]]; then
+        # url="$INPUT"
+        history -s "$INPUT"
+        kodi_send_dir "$INPUT"
+        main
     # Formats supported by Kodi
     elif [[ $INPUT =~ \.(mp[g34]|mk[va]|mov|avi|flv|wmv|asf|flac|m4[av]|aac|og[gm]|pls|jpe?g|png|gif|jpe?g|tiff|m3u8?)(\?.*)?$ ]]; then
         url="$INPUT"
