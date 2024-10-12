@@ -100,20 +100,19 @@ function kodi_shutdown() {
     if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "Request shutdown:" >&2
     fi
-    kodi_request '{"jsonrpc": "2.0", "method": "System.Shutdown"}'
+    kodi_request '{"jsonrpc": "2.0", "method": "System.Shutdown","params":{}}'
 }
 function kodi_reboot() {
     if [[ -n ${VERBOSE+x} ]] && [[ $VERBOSE == 1 ]]; then
         echo "Request reboot:" >&2
     fi
-    kodi_request '{"jsonrpc": "2.0", "method": "System.Reboot"}'
+    kodi_request '{"jsonrpc": "2.0", "method": "System.Reboot","params":{}}'
 }
 function check_url() {
     local input_string=$1
     local url_pattern='(https?|ftp|file|rtsp)://[-[:alnum:]\+&@#/%?=~_|!:,.;]+'
 
     if [[ ! $input_string =~ $url_pattern ]]; then
-        echo "Unsupported[url/path/cmd]: $input_string"
         unset INPUT
         main
     fi

@@ -45,7 +45,7 @@ function main() {
     # Other protocols
     elif ! [[ $INPUT =~ ^(https?://) ]]; then
         url="$INPUT"
-    Formats supported by Kodi
+    #Formats supported by Kodi
     elif [[ $INPUT =~ \.(mp[g34]|mk[va]|mov|avi|flv|wmv|asf|flac|m4[av]|aac|og[gm]|pls|jpe?g|png|gif|jpe?g|tiff|m3u8?)(\?.*)?$ ]]; then
         url="$INPUT"
     # youtube.com / youtu.be
