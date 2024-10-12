@@ -36,15 +36,16 @@ function main() {
         serve "$INPUT"
         url="http://$HOST_NAME:$SHARE_PORT/media"
     # Other protocols
-    elif ! [[ $INPUT =~ ^https?:// ]]; then
-        url="$INPUT"
-    # Other protocols
-    elif ! [[ $INPUT =~ ^upnp?:// ]]; then
+    elif [[ $INPUT =~ ^(upnp?://) ]]; then
         # url="$INPUT"
         history -s "$INPUT"
         kodi_send_dir "$INPUT"
+        unset INPUT
         main
-    # Formats supported by Kodi
+    # Other protocols
+    elif ! [[ $INPUT =~ ^(https?://) ]]; then
+        url="$INPUT"
+    Formats supported by Kodi
     elif [[ $INPUT =~ \.(mp[g34]|mk[va]|mov|avi|flv|wmv|asf|flac|m4[av]|aac|og[gm]|pls|jpe?g|png|gif|jpe?g|tiff|m3u8?)(\?.*)?$ ]]; then
         url="$INPUT"
     # youtube.com / youtu.be
