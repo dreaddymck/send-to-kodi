@@ -9,7 +9,7 @@ while [[ $* ]]; do
     -v | --version)
         version
         exit
-        ;;        
+        ;;
     -d)
         DOWNLOAD_DIR="$2"
         shift

@@ -110,7 +110,6 @@ function dlrz_cmd() {
     fi
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
-        dlrz_read
     fi
     if [[ -z $INPUT ]]; then
         unset INPUT
