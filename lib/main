@@ -25,6 +25,7 @@ function main() {
     fi
     if [[ -f "$SEND_TO_KODI_DIR/lib/commands" ]]; then
         source "$SEND_TO_KODI_DIR/lib/commands"
+        main
     fi
     # Don't try to resolve
     if ((SEND_RAW)); then
