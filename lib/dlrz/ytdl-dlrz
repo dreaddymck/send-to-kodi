@@ -70,12 +70,12 @@ function dlrz_main() {
             fi
             if [[ -n $REMOTE_SSH ]] && [[ -n $REMOTE_PATH ]]; then
 
-                rsync -av --progress --inplace --no-group --no-perms --no-owner "$mtitle" "$REMOTE_SSH":"$REMOTE_PATH"
+                rsync -rv --size-only --progress "$mtitle" "$REMOTE_SSH":"$REMOTE_PATH"
                 rm "$mtitle"
 
             elif [[ ! $DOWNLOAD_DIR =~ ^($PWD)$ ]]; then
 
-                rsync -av --progress --inplace --no-group --no-perms --no-owner "$mtitle" "$DOWNLOAD_DIR"
+                rsync -rv --size-only --progress "$mtitle" "$DOWNLOAD_DIR"
                 rm "$mtitle"
 
             fi
